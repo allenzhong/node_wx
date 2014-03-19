@@ -1,6 +1,9 @@
 var crypto = require("crypto");
 var http = require("http");
 var util = require("util");
+var xmlreader = require("xmlreader");
+var xmlbuilder = require("xmlbuilder");
+
 /*
  * GET home page.
  */
@@ -17,8 +20,13 @@ exports.index = function(req, res) {
 };
 
 exports.doMessage = function(req, res) {
-    console.log(req.rawBody);
-    res.send(req.rawBody);
+    //console.log(req.rawBody);
+    //res.send(req.rawBody);
+    readXml(req.rawBody, function(json) {
+        buildXml(json, function(xml) {
+            res.send(xml);
+        });
+    });
 };
 
 //Check Wei Xin Signature
@@ -51,4 +59,32 @@ getAccessToken = function(callback) {
         console.log(res.responseText);
         callback(res.responseText);
     });
+};
+//Handle xml 
+//callback(json)
+readXml = function(xml, callback) {
+    xmlreader = read(xml, function(err, res) {
+        var json = {
+            ToUserName: res.xml.ToUserName.text(),
+            FromUserName: res.xml.FromUserName.text(),
+            CreateTime: res.xml.CreateTime.text(),
+            MsgType: res.xml.MsgType.text(),
+            Content: res.xml.Content.text(),
+            MsgId: res.xml.MsgId.text()
+        };
+        callback(json);
+    });
+};
+
+buildXml = function(json, callback) {
+    var xml = xmlbuilder.create({
+        xml: {
+            ToUserName: "<![CDATA[" + json.FromUserName + "]]>",
+            FromUserName: "<![CDATA[" + json.ToUserName + "]]>",
+            CreateTime: "<![CDATA[" + json.CreateTime + "]]>",
+            MsgType: "<![CDATA[" + json.MsgType + "]]>",
+            Content: "<![CDATA[" + json.Content + "]]>"
+        }
+    });
+    callback(xml);
 };
