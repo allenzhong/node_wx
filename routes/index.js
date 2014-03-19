@@ -3,7 +3,7 @@ var http = require("http");
 var util = require("util");
 var xmlreader = require("xmlreader");
 var xmlbuilder = require("xmlbuilder");
-
+var xmlLib = require("xml");
 /*
  * GET home page.
  */
@@ -23,10 +23,16 @@ exports.doMessage = function(req, res) {
     //console.log(req.rawBody);
     //res.send(req.rawBody);
     readXml(req.rawBody, function(json) {
-        console.log("json - >" + JSON.stringify(json));
+        //console.log("json - >" + JSON.stringify(json));
         buildXml(json, function(xml) {
             console.log("xml - > " + xml);
-            res.send(xml);
+            //res.send(xml);
+            res.header('Content-Type', 'text/xml');
+            res.send(xml.end({
+                pretty: true,
+                indent: '  ',
+                newline: '\n'
+            }));
         });
     });
 };
@@ -65,7 +71,8 @@ getAccessToken = function(callback) {
 //Handle xml 
 //callback(json)
 readXml = function(xml, callback) {
-    xmlreader = read(xml, function(err, res) {
+    xmlreader.read(xml, function(err, res) {
+        console.log("xmlreader.read");
         var json = {
             ToUserName: res.xml.ToUserName.text(),
             FromUserName: res.xml.FromUserName.text(),
@@ -79,16 +86,27 @@ readXml = function(xml, callback) {
 };
 
 buildXml = function(json, callback) {
-    console.log(JSON.stringify(json));
-    var xml = xmlbuilder.create({
-        xml: {
-            ToUserName: "<![CDATA[" + json.FromUserName + "]]>",
-            FromUserName: "<![CDATA[" + json.ToUserName + "]]>",
-            CreateTime: "<![CDATA[" + json.CreateTime + "]]>",
-            MsgType: "<![CDATA[" + json.MsgType + "]]>",
-            Content: "<![CDATA[" + json.Content + "]]>"
-        }
-    });
-    console.log(xml);
+    //console.log(JSON.stringify(json));
+    // var xml = xmlbuilder.create({
+    //     xml: {
+    //         ToUserName: {
+    //             dat: json.FromUserName
+    //         },
+    //         FromUserName: {
+    //             cdata: json.ToUserName
+    //         },
+    //         CreateTime: "<![CDATA[" + json.CreateTime + "]]>",
+    //         MsgType: "<![CDATA[" + json.MsgType + "]]>",
+    //         Content: "<![CDATA[" + json.Content + "]]>"
+    //     }
+    // });
+    console.log("buildXml");
+    var xml = xmlbuilder.create("xml");
+    xml.ele("ToUserName").dat(json.FromUserName);
+    xml.ele("FromUserName").dat(json.ToUserName);
+    xml.ele("CreateTime").dat(json.CreateTime);
+    xml.ele("MsgType").dat(json.MsgType);
+    xml.ele("Content").dat(json.Content);
+    //console.log(xml);
     callback(xml);
 };
