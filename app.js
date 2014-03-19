@@ -50,9 +50,9 @@ app.post('/', function(req, res, next) {
     req.on('end', function() {
         req.rawBody = data;
         console.log(" req.rawBody : " + req.rawBody);
-        next();
+        routes.doMessage();
     });
-}, routes.doMessage);
+});
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function() {
