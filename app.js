@@ -16,19 +16,19 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(function(req, res, next) {
-    var data = '';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk) {
-        console.log("data : " + chunk);
-        data += chunk;
-    });
-    req.on('end', function() {
-        req.rawBody = data;
-        console.log(" req.rawBody : " + req.rawBody);
-        next();
-    });
-});
+// app.use(function(req, res, next) {
+//     var data = '';
+//     req.setEncoding('utf8');
+//     req.on('data', function(chunk) {
+//         console.log("data : " + chunk);
+//         data += chunk;
+//     });
+//     req.on('end', function() {
+//         req.rawBody = data;
+//         console.log(" req.rawBody : " + req.rawBody);
+//         next();
+//     });
+// });
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -40,7 +40,19 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.post('/', routes.doMessage);
+app.post('/', function(req, res, next) {
+    var data = '';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk) {
+        console.log("data : " + chunk);
+        data += chunk;
+    });
+    req.on('end', function() {
+        req.rawBody = data;
+        console.log(" req.rawBody : " + req.rawBody);
+        next();
+    });
+}, routes.doMessage);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function() {
