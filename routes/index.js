@@ -23,7 +23,9 @@ exports.doMessage = function(req, res) {
     //console.log(req.rawBody);
     //res.send(req.rawBody);
     readXml(req.rawBody, function(json) {
+        console.log("json - >" + JSON.stringify(json));
         buildXml(json, function(xml) {
+            console.log("xml - > " + xml);
             res.send(xml);
         });
     });
