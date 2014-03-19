@@ -50,7 +50,7 @@ app.post('/', function(req, res, next) {
     req.on('end', function() {
         req.rawBody = data;
         console.log(" req.rawBody : " + req.rawBody);
-        routes.doMessage();
+        routes.doMessage(req, res);
     });
 });
 app.get('/users', user.list);
