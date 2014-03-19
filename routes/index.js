@@ -77,6 +77,7 @@ readXml = function(xml, callback) {
 };
 
 buildXml = function(json, callback) {
+    console.log(JSON.stringify(json));
     var xml = xmlbuilder.create({
         xml: {
             ToUserName: "<![CDATA[" + json.FromUserName + "]]>",
@@ -86,5 +87,6 @@ buildXml = function(json, callback) {
             Content: "<![CDATA[" + json.Content + "]]>"
         }
     });
+    console.log(xml);
     callback(xml);
 };
