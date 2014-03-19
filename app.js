@@ -17,10 +17,16 @@ app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(function(req, res, next) {
-    req.rawBody = '';
+    var data = '';
     req.setEncoding('utf8');
     req.on('data', function(chunk) {
-        req.rawBody += chunk;
+        console.log("data : " + chunk);
+        data += chunk;
+    });
+    req.on('end', function() {
+        req.rawBody = data;
+        console.log(" req.rawBody : " + req.rawBody);
+        next();
     });
 });
 app.use(express.bodyParser());
