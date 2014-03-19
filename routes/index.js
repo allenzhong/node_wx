@@ -17,8 +17,8 @@ exports.index = function(req, res) {
 };
 
 exports.doMessage = function(req, res) {
-    console.log(req.body);
-    res.send(req.body);
+    console.log(req.rawBody);
+    res.send(req.rawBody);
 };
 
 //Check Wei Xin Signature
