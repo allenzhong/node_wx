@@ -108,14 +108,14 @@ getAccessToken = function(callback) {
 var menuJson = {
     button: [{
         type: "click",
-        name: "今日歌曲",
+        name: "Test1",
         key: "V1001_TODAY_MUSIC"
     }, {
         type: "click",
-        name: "歌手简介",
+        name: "Test2",
         key: "V1001_TODAY_SINGER"
     }, {
-        name: "菜单",
+        name: "Menu",
         sub_button: [{
             type: "view",
             name: "搜索",
@@ -130,6 +130,7 @@ var menuJson = {
 //create menu,POST
 createMenu = function(token, callback) {
     var url = util.format(createMenuUrl, token);
+    console.log("menu url:-> " + url);
     var jsonString = JSON.stringify(menuJson);
     var headers = {
         'Content-Type': 'application/json',
@@ -138,7 +139,7 @@ createMenu = function(token, callback) {
     var options = {
         host: "https://api.weixin.qq.com",
         port: 443,
-        path: "cgi-bin/menu/create?access_token=" + token,
+        path: "/cgi-bin/menu/create?access_token=" + token,
         method: "POST",
         headers: headers
     };
@@ -146,6 +147,7 @@ createMenu = function(token, callback) {
         if (typeof(callback) == "function")
             callback(res);
     });
+    console.log("jsonString:->" + jsonString);
     req.write(jsonString);
     req.end();
 };
