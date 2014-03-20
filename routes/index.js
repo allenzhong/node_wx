@@ -91,10 +91,17 @@ var createMenuUrl = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token
 // }
 getAccessToken = function(callback) {
     var url = util.format(accessTokenUrl, appID, appsecrect);
+    console.log("access url :" + url);
     https.get(url, function(res) {
-        console.log("after access token ->" + res.responseText);
-        var json = JSON.parse(res.responseText);
-        callback(json.access_token);
+        var body = "";
+        res.on('data', function(d) {
+            body += d;
+        });
+        res.on('end', function() {
+            console.log("body: " + body);
+            var json = JSON.parse(body);
+            callback(json.access_token);
+        });
     });
 };
 
