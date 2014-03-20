@@ -1,5 +1,6 @@
 var crypto = require("crypto");
 var http = require("http");
+var https = require("https");
 var util = require("util");
 var xmlreader = require("xmlreader");
 var xmlbuilder = require("xmlbuilder");
@@ -90,7 +91,7 @@ var createMenuUrl = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token
 // }
 getAccessToken = function(callback) {
     var url = util.format(accessTokenUrl, appID, appsecrect);
-    http.get(url, function(res) {
+    https.get(url, function(res) {
         console.log("after access token ->" + res.responseText);
         var json = JSON.parse(res.responseText);
         callback(json.access_token);
@@ -129,12 +130,12 @@ createMenu = function(token, callback) {
     };
     var options = {
         host: "https://api.weixin.qq.com",
-        port: 80,
+        port: 443,
         path: "cgi-bin/menu/create?access_token=" + token,
         method: "POST",
         headers: headers
     };
-    var req = http.request(options, function(res) {
+    var req = https.request(options, function(res) {
         if (typeof(callback) == "function")
             callback(res);
     });
