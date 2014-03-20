@@ -4,6 +4,7 @@ var util = require("util");
 var xmlreader = require("xmlreader");
 var xmlbuilder = require("xmlbuilder");
 var xmlLib = require("xml");
+var message = require("../model/message");
 /*
  * GET home page.
  */
@@ -22,19 +23,27 @@ exports.index = function(req, res) {
 exports.doMessage = function(req, res) {
     //console.log(req.rawBody);
     //res.send(req.rawBody);
-    readXml(req.rawBody, function(json) {
-        //console.log("json - >" + JSON.stringify(json));
-        buildXml(json, function(xml) {
-            console.log("xml - > " + xml);
-            //res.send(xml);
-            res.header('Content-Type', 'text/xml');
-            res.send(xml.end({
-                pretty: true,
-                indent: '  ',
-                newline: '\n'
-            }));
-        });
+    message.handleMsg(req.rawBody, function(xml) {
+        res.header('Content-Type', 'text/xml');
+        res.send(xml.end({
+            pretty: true,
+            indent: '  ',
+            newline: '\n'
+        }));
     });
+    // readXml(req.rawBody, function(json) {
+    //     //console.log("json - >" + JSON.stringify(json));
+    //     buildXml(json, function(xml) {
+    //         console.log("xml - > " + xml);
+    //         //res.send(xml);
+    //         res.header('Content-Type', 'text/xml');
+    //         res.send(xml.end({
+    //             pretty: true,
+    //             indent: '  ',
+    //             newline: '\n'
+    //         }));
+    //     });
+    // });
 };
 
 //Check Wei Xin Signature
@@ -68,45 +77,31 @@ getAccessToken = function(callback) {
         callback(res.responseText);
     });
 };
-//Handle xml 
-//callback(json)
-readXml = function(xml, callback) {
-    xmlreader.read(xml, function(err, res) {
-        console.log("xmlreader.read");
-        var json = {
-            ToUserName: res.xml.ToUserName.text(),
-            FromUserName: res.xml.FromUserName.text(),
-            CreateTime: res.xml.CreateTime.text(),
-            MsgType: res.xml.MsgType.text(),
-            Content: res.xml.Content.text(),
-            MsgId: res.xml.MsgId.text()
-        };
-        callback(json);
-    });
-};
+// //Handle xml 
+// //callback(json)
+// readXml = function(xml, callback) {
+//     xmlreader.read(xml, function(err, res) {
+//         console.log("xmlreader.read");
+//         var json = {
+//             ToUserName: res.xml.ToUserName.text(),
+//             FromUserName: res.xml.FromUserName.text(),
+//             CreateTime: res.xml.CreateTime.text(),
+//             MsgType: res.xml.MsgType.text(),
+//             Content: res.xml.Content.text(),
+//             MsgId: res.xml.MsgId.text()
+//         };
+//         callback(json);
+//     });
+// };
 
-buildXml = function(json, callback) {
-    //console.log(JSON.stringify(json));
-    // var xml = xmlbuilder.create({
-    //     xml: {
-    //         ToUserName: {
-    //             dat: json.FromUserName
-    //         },
-    //         FromUserName: {
-    //             cdata: json.ToUserName
-    //         },
-    //         CreateTime: "<![CDATA[" + json.CreateTime + "]]>",
-    //         MsgType: "<![CDATA[" + json.MsgType + "]]>",
-    //         Content: "<![CDATA[" + json.Content + "]]>"
-    //     }
-    // });
-    console.log("buildXml");
-    var xml = xmlbuilder.create("xml");
-    xml.ele("ToUserName").dat(json.FromUserName);
-    xml.ele("FromUserName").dat(json.ToUserName);
-    xml.ele("CreateTime").dat(json.CreateTime);
-    xml.ele("MsgType").dat(json.MsgType);
-    xml.ele("Content").dat(json.Content);
-    //console.log(xml);
-    callback(xml);
-};
+// buildXml = function(json, callback) {
+//     console.log("buildXml");
+//     var xml = xmlbuilder.create("xml");
+//     xml.ele("ToUserName").dat(json.FromUserName);
+//     xml.ele("FromUserName").dat(json.ToUserName);
+//     xml.ele("CreateTime").dat(json.CreateTime);
+//     xml.ele("MsgType").dat(json.MsgType);
+//     xml.ele("Content").dat(json.Content);
+//     //console.log(xml);
+//     callback(xml);
+// };
