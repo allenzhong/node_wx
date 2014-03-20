@@ -44,12 +44,12 @@ app.post('/', function(req, res, next) {
     var data = '';
     req.setEncoding('utf8');
     req.on('data', function(chunk) {
-        console.log("data : " + chunk);
+        //console.log("data : " + chunk);
         data += chunk;
     });
     req.on('end', function() {
         req.rawBody = data;
-        console.log(" req.rawBody : " + req.rawBody);
+        //console.log(" req.rawBody : " + req.rawBody);
         routes.doMessage(req, res);
     });
 });

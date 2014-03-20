@@ -55,7 +55,8 @@ buildXml = function(json, callback) {
     xml.ele("ToUserName").dat(json.FromUserName);
     xml.ele("FromUserName").dat(json.ToUserName);
     xml.ele("CreateTime").dat(json.CreateTime);
-    xml.ele("MsgType").dat(json.MsgType);
+    //xml.ele("MsgType").dat(json.MsgType);
+    xml.ele("MsgType").dat("text");
     if (json.MsgType == "text") {
 
         xml.ele("Content").dat("It's text message");

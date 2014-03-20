@@ -52,13 +52,13 @@ checkSignature = function(req) {
     var timestamp = req.param("timestamp");
     var nonce = req.param("nonce");
     var array = [token, timestamp, nonce];
-    console.log(array);
+    // console.log(array);
     var sortArray = array.sort();
     var str = sortArray.join("");
     var shasum = crypto.createHash("sha1");
     shasum.update(str);
     var hex = shasum.digest('hex');
-    console.log("hex: " + hex);
+    // console.log("hex: " + hex);
     if (signature == hex)
         return true;
     else
