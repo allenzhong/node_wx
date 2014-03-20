@@ -144,6 +144,10 @@ createMenu = function(token, callback) {
         headers: headers
     };
     var req = https.request(options, function(res) {
+        console.log("res status :" + res.statusCode);
+        res.on('data', function(chunk) {
+            console.log("CreateMenuRes:" + chunk);
+        });
         if (typeof(callback) == "function")
             callback(res);
     });
