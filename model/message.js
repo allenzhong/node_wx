@@ -102,12 +102,13 @@ buildXml = function(json, callback) {
     //console.log(xml);
     callback(xml);
 };
-
+//build event response that message is text
 buildEvent = function(json, callback) {
     var xml = xmlbuilder.create("xml");
     xml.ele("ToUserName").dat(json.FromUserName);
     xml.ele("FromUserName").dat(json.ToUserName);
     xml.ele("CreateTime").dat(json.CreateTime);
+    xml.ele("MsgType").dat("text");
     if (json.Event == "subscribe") {
         xml.ele("Content").dat("谢谢关注众云测试平台");
     } else if (json.Event == "subscribe") {
