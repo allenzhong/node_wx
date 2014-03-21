@@ -40,6 +40,9 @@ readXml = function(xml, callback) {
             json.MediaId = res.xml.MediaId.text();
             jsonMsgId = res.xml.MsgId.text();
             json.Format = res.xml.Format.text();
+            if (res.xml.Recognition != "undefined") {
+                json.Recognition = res.xml.Recognition.text();
+            }
         } else if (json.MsgType == "video") {
             jsonMsgId = res.xml.MsgId.text();
             json.MediaId = res.xml.MediaId.text();
@@ -84,9 +87,12 @@ buildXml = function(json, callback) {
         // xml.ele("Image").ele("MediaId").dat(json.MediaId);
         xml.ele("Content").dat("It's image message");
     } else if (json.MsgType == "voice") {
-
         //xml.ele("Voice").ele("MediaId").dat(json.MediaId);
-        xml.ele("Content").dat("It's voice message");
+        if (json.Recognition != "undefined") {
+            xml.ele("Content").dat(json.Recognition);
+        } else {
+            xml.ele("Content").dat("It's voice message");
+        }
     } else if (json.MsgType == "video") {
         // json.MediaId = res.xml.MediaId.text();
         // json.ThumbMediaId = res.xml.ThumbMediaId.text();
