@@ -47,14 +47,45 @@ exports.doMessage = function(req, res) {
         }));
     });
 };
-
+//get Followers list
 exports.followers = function(req, res) {
+    var test = req.param("test");
+    if (test == "ultuum")
+        getAccessToken(function(access_token) {
+            console.log("access token" + access_token);
+            user.getFollowers(access_token, "", function(json) {
+                res.render('followers', json);
+            });
+        });
+    else
+        res.render('followers', {
+            test: "test"
+        });
+    //user.getFollowers()
+};
+//get Single Follower
+exports.follower = function(req, res) {
+
+    var open_id = req.param("id");
     getAccessToken(function(access_token) {
-        user.getFollowers(access_token, null, function(json) {
-            res.render('followers', json);
+        console.log("access token-> " + access_token);
+        user.getFollower(access_token, open_id, function(json) {
+            res.json(json);
         });
     });
-    //user.getFollowers()
+};
+
+exports.sendMsg = function(req, res) {
+    var open_id = req.param("id");
+    var msg = req.param("content");
+    getAccessToken(function(access_token) {
+        user.sendmsg(access_token, open_id, 'text', msg, function(response) {
+            if (response.statusCode == "200")
+                res.send({
+                    success: true
+                });
+        });
+    });
 };
 
 //Check Wei Xin Signature

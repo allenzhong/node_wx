@@ -1,7 +1,102 @@
 extends layout
 
+
+block script
+  if test
+
+  else
+    script.
+      $(document).ready(function(){
+          // open id click
+          $("a[rel='openid']").on('click',function(){
+              var openid = $(this).attr("rel1");
+              $.ajax({
+                type:"GET",
+                url:"/follower/"+$(this).attr("rel1")
+                }).done(function(res){
+                  //var json = JSON.parse(res);
+                  //alert(res);
+                  $("#name-"+openid).html(res.nickname);
+                });
+            });//--open id click
+          // send id click
+          $("a[rel='sendid']").on('click',function(){
+            var sendid = $(this).attr("rel1");
+            var sendname =  $("#name-"+sendid).html();
+              //should popup a modle and send message to this open id
+            $("#myModal").modal();
+            $("#myModal #send_open_id").html(sendid);
+            $("#myModal #send_name").html(sendname);
+            $("input#input_open_id").val(sendid);
+            });//-- send id click
+            //modal msg send button
+            $("#btn_send_msg").on('click',function(){
+                var msg = $("#txt_send_msg").val();
+                var openid = $("input#input_open_id").val();
+                var sendname = $("#myModal #send_name").html();
+                $.ajax({
+                    type:"GET",
+                    url:"/sendMsg/"+openid,
+                    data:{
+                      content:msg
+                    }
+                    }).done(function(res){
+                      if(res.success){
+                          $("#myModal #send_open_id").html("");
+                          $("#myModal #send_name").html("");
+                          $("input#input_open_id").val("");
+                          $("#myModal").modal('hide');
+                      }
+
+                });
+            });//-- modal msg send button
+        });
+
 block content
-  if errcode
-    | errcode - #{errcode}, errmsg - #{errmsg}
-  h1!= total
-  h2!= count
+  if test
+    | You cannot access page
+  else
+    .row
+      .col-xs-3.col-md-3
+        if errcode
+          | errcode - #{errcode}, errmsg - #{errmsg}
+        h1 Total
+          |#{total}
+        h2 Count
+          |#{count}
+        h3= Users
+      .col-xs-6.col-md-6
+        .row
+          table.table
+            tr
+              th Open ID
+              th Name
+            - each item in data.openid
+              tr
+                td= item
+                  &nbsp; 
+                  a(href="#",rel="openid",rel1="#{item}")
+                    i.glyphicon.glyphicon-search 
+                  &nbsp; 
+                  a(href="#",rel="sendid", rel1= "#{item}")
+                    i.glyphicon.glyphicon-envelope   
+                td(id="name-#{item}")
+      .col-xs-3.col-md-3
+        #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h4#myModalLabel.modal-title Send Message to                 
+                 label#send_name
+                 label#send_open_id 
+              .modal-body
+                 input#input_open_id(type="hidden")
+                 input#txt_send_msg.form-control(type="text")
+              .modal-footer
+                button#btn_send_msg.btn.btn-default(type='button') 
+                  i.glyphicon.glyphicon-envelope
+                  | Send
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+
+

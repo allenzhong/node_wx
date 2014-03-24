@@ -40,7 +40,9 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/follower/:id', routes.follower);
 app.get('/followers', routes.followers);
+app.get('/sendMsg/:id', routes.sendMsg);
 app.get('/createMenu', routes.create_menu);
 app.post('/', function(req, res, next) {
     var data = '';
