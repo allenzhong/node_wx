@@ -40,6 +40,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/followers', routes.followers);
 app.get('/createMenu', routes.create_menu);
 app.post('/', function(req, res, next) {
     var data = '';

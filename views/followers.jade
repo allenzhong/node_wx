@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  if errcode
+    | errcode - #{errcode}, errmsg - #{errmsg}
+  h1!= total
+  h2!= count

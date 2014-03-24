@@ -6,6 +6,7 @@ var xmlreader = require("xmlreader");
 var xmlbuilder = require("xmlbuilder");
 var xmlLib = require("xml");
 var message = require("../model/message");
+var user = require("../model/user");
 /*
  * GET home page.
  */
@@ -45,19 +46,15 @@ exports.doMessage = function(req, res) {
             newline: '\n'
         }));
     });
-    // readXml(req.rawBody, function(json) {
-    //     //console.log("json - >" + JSON.stringify(json));
-    //     buildXml(json, function(xml) {
-    //         console.log("xml - > " + xml);
-    //         //res.send(xml);
-    //         res.header('Content-Type', 'text/xml');
-    //         res.send(xml.end({
-    //             pretty: true,
-    //             indent: '  ',
-    //             newline: '\n'
-    //         }));
-    //     });
-    // });
+};
+
+exports.followers = function(req, res) {
+    getAccessToken(function(access_token) {
+        user.getFollowers(access_token, null, function(json) {
+            res.render('followers', json);
+        });
+    });
+    //user.getFollowers()
 };
 
 //Check Wei Xin Signature
