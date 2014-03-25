@@ -5,8 +5,8 @@ util = require("util")
 xmlreader = require("xmlreader")
 xmlbuilder = require("xmlbuilder")
 xmlLib = require("xml")
-message = require("../model/message")
-user = require("../model/user")
+message = require("../handler/message")
+user = require("../handler/user")
 
 #
 # * GET home page.

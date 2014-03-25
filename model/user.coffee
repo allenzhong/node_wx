@@ -1,32 +1,56 @@
-https = require 'https'
-util = require 'util'
-modelutil = require './modelUtil'
+bcrypt = require 'bcrypt'
 
-getFollowersUrl = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s"
-getFollowerUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN"
-sendMsgUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s"
-# Get Followers, 10k followers/per request.
-# Use next_openid for next request.
-# callback(result json) ->{"total":2,"count":2,"data":{"openid":["","OPENID1","OPENID2"]},"next_openid":"NEXT_OPENID"}
-exports.getFollowers = (access_token,next_openid,callback)->
-  # nextUrl = util.format next_openidUrl, next_openid
-  url = util.format getFollowersUrl,access_token,next_openid
-  console.log "followers url-> " + url
-  modelutil.getJson(url,callback);
+#User Model
 
-exports.getFollower = (access_token,open_id,callback)->
-  url = util.format getFollowerUrl ,access_token, open_id
-  console.log "single follower url ->" + url
-  modelutil.getJson(url,callback);
+class User
 
-exports.sendmsg = (access_token,open_id,type='text',content,callback)->
-  host = "api.weixin.qq.com"
-  path = "/cgi-bin/message/custom/send?access_token="
-  json = {
-        touser:open_id,
-        msgtype:type,
-        text:{
-             content:content
+    constructor:(@id,@rev,@name,@password,@email)->
+
+        #private method
+        @hash=(password)->
+            if(password)
+                #console.log("Password : " + password)
+                salt = bcrypt.genSaltSync 10
+                #console.log("Salt : " + salt)
+                hash = bcrypt.hashSync password, salt
+                #console.log("hash : " + hash)
+                return hash
+            
+        #belong to constructor method 
+        @password = @hash(password)
+        #console.log("My Password : " + @password)
+        @resource = 'user'
+
+    parseDoc:(doc)->
+        @id = doc._id
+        @name = doc.name
+        @password = doc.password
+        @email = doc.email
+        @rev = doc._rev
+        @resource =  "user"
+
+    setObject:(obj)->
+        @id = obj.id unless obj.id
+        @rev = obj.rev unless obj.rev
+        @name = obj.name
+        @password = @hash(obj.password)
+        @email = obj.email
+        @resource = 'user'
+        return null
+
+    getObject:->
+        @user = {
+            name: @name,
+            password: @password,
+            email: @email,
+            resource :@resource
         }
-  }
-  modelutil.postJson(host,path,access_token,json,callback);
+        #`#console.log(""+ @id)
+        @user['_id']=@id if @id
+        @user['_rev']=@rev if@rev
+        return @user
+    
+    compare:(inputValue)->
+        bcrypt.compareSync(inputValue,@password)
+
+module.exports = User
