@@ -14,26 +14,9 @@ class Configuration
             #auth
             @Auth_Hash = "Myhash"
 
-            #data model
-            @Blog_Model = {
-                    id: "",
-                    belong_to_page_id: "",
-                    belong_to_user_id: "",
-                    title: "",
-                    author: "",
-                    content: "",
-                    created: "",
-                    tags: []
-                }
-            @User_Model = {
-                    id: "",
-                    name: "",
-                    password: "",
-                    hash: "",
-                    email: ""
-                }
-
+            #PageNum
             @AdminPageNum = 20
+
         getDBConnection:()->
             host = @CouchDB_URL
             port = @CouchDB_Port
@@ -41,6 +24,7 @@ class Configuration
                                 cache: true,
                                 raw:false}
             db = connection.database @CouchDB_Name
+
     @getInstance:()->
         instance ?= new Config()
         
