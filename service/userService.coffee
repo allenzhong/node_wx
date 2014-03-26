@@ -1,5 +1,5 @@
 UserModel = require '../model/user'
-Service = require './Service'
+Service = require './service'
 
 class UserService extends Service
     constructor:(@db)->

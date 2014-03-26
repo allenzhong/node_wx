@@ -1,5 +1,5 @@
 ConfigurationModel = require '../model/configuration'
-Service = require './Service'
+Service = require './service'
 
 class ConfigurationService extends Service
     constructor:(@db)->

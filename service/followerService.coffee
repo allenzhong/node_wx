@@ -1,5 +1,5 @@
 FollowerModel = require '../model/follower'
-Service = require './Service'
+Service = require './service'
 
 class FollowerService extends Service
     constructor:(@db)->
