@@ -10,3 +10,5 @@ class FollowerService extends Service
           follower.parseDoc doc
           followers.push follower
        return followers
+
+module.exports = FollowerService

@@ -57,13 +57,11 @@ class Follower
             country:@country,
             headimgurl:@headimgurl,
             subscribe_time:@subscribe_time,
-            resource :@resource
+            resource :"follower"
         }
         #`#console.log(""+ @id)
         @follower['_id']=@id if @id
         @follower['_rev']=@rev if@rev
-        return @user
+        return @follower
 
-
-
-    module.exports = Follower
+module.exports = Follower

@@ -13,6 +13,7 @@ ConfigurationService = require '../service/configurationService'
 
 
 #Check Wei Xin Signature
+token = "allenzhong"
 exports.checkSignature = (req) ->
   signature = req.param("signature")
   timestamp = req.param("timestamp")
@@ -30,7 +31,7 @@ exports.checkSignature = (req) ->
   else
     return false
 
-
+configInstance = Configuration.getInstance()
 appID = "wxba50ad44bb9be2db"
 appsecrect = "1e46b3602cd99f55154bcb8d1a8b1b25"
 accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
@@ -41,34 +42,48 @@ createMenuUrl = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s"
 exports.getAccessToken = (callback) ->
   # check wheather access_token is exists or expired
   #Get config singleton instance
-  configInstance = Configuration.getInstance()
+  
   # Init cradle connection from configuration
   db = configInstance.getDBConnection()
   service = new ConfigurationService(db)
   service.check (config)->
     available = isAccessTokenAvailable(config)
+    console.log "Access Token is available:->" + available
     if available
+      console.log "From Db get toke : " + config.access_token
       callback config.access_token
     else
       requestAndUpdateAccessToken(callback);
+      # callback "4rC-ik7TPl2Iy53mgc2aBg8Vnlr-2iW_I9Cp8kqe38uUpqaAiKYgdxyaurXF9AAm7Gz6XwWSm4DV6T1WPzpRy44V8BFSJyn_eqEPDG4___UPhfDgQlvtv9eVLOBocOfRDS-q-oiPIILJOK6sbgfoFg"
 
 
 
 # Request access token from server and save/update it
-exports.requestAndUpdateAccessToken = (callback)->
+exports.requestAndUpdateAccessToken=requestAndUpdateAccessToken = (callback)->
   url = util.format(accessTokenUrl, appID, appsecrect)
-  console.log "access url :" + url
+  # console.log "access url :" + url
+  # json = {
+  #   access_token:"4rC-ik7TPl2Iy53mgc2aBg8Vnlr-2iW_I9Cp8kqe38uUpqaAiKYgdxyaurXF9AAm7Gz6XwWSm4DV6T1WPzpRy44V8BFSJyn_eqEPDG4___UPhfDgQlvtv9eVLOBocOfRDS-q-oiPIILJOK6sbgfoFg",
+  #   expires_in:7200
+  # }
+  # if !isErrorInAccessToken(json)
+  #       console.log "Save token :" + json
+  #       saveAccessToken(json)
+  # console.log "From Server get toke :-> " + json.access_token
+  # callback json.access_token
   https.get url, (res) ->
     body = ""
     res.on "data", (d) ->
       body += d
-
     res.on "end", ->
       console.log "body: " + body
       json = JSON.parse(body)
       if !isErrorInAccessToken(json)
+        console.log "Save token :" + body
         saveAccessToken(json)
+      console.log "From Server get toke :-> " + json.access_token
       callback json.access_token
+
 
 # If errcode is exists, return true
 isErrorInAccessToken = (responseJson)->
@@ -94,15 +109,19 @@ isAccessTokenAvailable = (config)->
 saveAccessToken = (json)->
   db = configInstance.getDBConnection()
   service = new ConfigurationService(db)
+  console.log "Check"
   service.check (config)->
+    console.log "check callback"
     config.access_token = json.access_token
     config.expires_in = json.expires_in
     config.token_created = new moment().unix()
-    service.save config.getObject(),null,(err)->
+    console.log "config object" + JSON.stringify(config.getObject())
+    obj = config.getObject()
+    console.log obj
+    service.save obj,(err)->
       if err
         console.log "Save token error"
-      else
-        return
+
 
 #create menu,POST
 exports.createMenu = (token, callback) ->

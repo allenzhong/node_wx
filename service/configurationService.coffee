@@ -19,9 +19,10 @@ class ConfigurationService extends Service
             configs = obj.parseDocs docs
             # console.log configs.length
             if(configs.length>0)
-                # console.log JSON.stringify(configs[0])
+                console.log  "In Length >0 :    "+JSON.stringify(configs[0])
                 callback configs[0]
             else
+                console.log "In Length ==0:   " 
                 callback null),false,this
 
 module.exports = ConfigurationService

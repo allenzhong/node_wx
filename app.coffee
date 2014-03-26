@@ -40,6 +40,7 @@ app.get "/follower/:id", routes.follower
 app.get "/followers", routes.followers
 app.get "/sendMsg/:id", routes.sendMsg
 app.get "/createMenu", routes.create_menu
+app.get "/updateToken",routes.updateToken
 app.post "/", (req, res, next) ->
   data = ""
   req.setEncoding "utf8"

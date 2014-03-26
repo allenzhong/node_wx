@@ -52,15 +52,31 @@ exports.doMessage = (req, res) ->
 
   return
 
+exports.updateToken = (req,res)->
+  platform.requestAndUpdateAccessToken () ->
+    res.json {message:"updated"}
 
 #get Followers list
 exports.followers = (req, res) ->
   test = req.param("test")
+  action = req.param("action")
   if test is "ultuum"
     platform.getAccessToken (access_token) ->
-      console.log "access token" + access_token
-      user.getFollowers access_token, "", (json) ->
-        res.render "followers", json
+      # console.log "access token" + access_token
+      # res.render "followers"
+      user.countFollowers (sum)->
+        if sum>0
+          user.getFollowersFromDB (followers)->
+            json ={followers:followers}
+            console.log  JSON.stringify json
+            res.render "followers", json
+        else
+          user.getFollowers access_token, "", (json) ->
+            # console.log json.data
+            user.saveFollowersOpenId json
+            result = user.pasreFollowersResponseJson json
+            console.log "Result " +JSON.stringify result
+            res.render "followers", result
   else
     res.render "followers",
       test: "test"
@@ -74,6 +90,7 @@ exports.follower = (req, res) ->
   platform.getAccessToken (access_token) ->
     console.log "access token-> " + access_token
     user.getFollower access_token, open_id, (json) ->
+      user.saveFollowerFullInfo json
       res.json json
 
 exports.sendMsg = (req, res) ->

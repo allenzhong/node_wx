@@ -61,9 +61,9 @@ block content
           if errcode
             | errcode - #{errcode}, errmsg - #{errmsg}
           h1 Total
-            |#{total}
+            //|#{total}
           h2 Count
-            |#{count}
+            //|#{count}
           h3= Users
         .col-xs-6.col-md-6
           .row
@@ -71,16 +71,17 @@ block content
               tr
                 th Open ID
                 th Name
-              - each item in data.openid
+              - each item in followers
                 tr
-                  td= item
+                  td= item.openid
                     &nbsp; 
-                    a(href="#",rel="openid",rel1="#{item}")
+                    a(href="#",rel="openid",rel1="#{item.openid}")
                       i.glyphicon.glyphicon-search 
                     &nbsp; 
-                    a(href="#",rel="sendid", rel1= "#{item}")
+                    a(href="#",rel="sendid", rel1= "#{item.openid}")
                       i.glyphicon.glyphicon-envelope   
-                  td(id="name-#{item}")
+                  td(id="name-#{item.openid}")
+                    | #{item.nickname}
         .col-xs-3.col-md-3
           #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
             .modal-dialog
