@@ -14,7 +14,7 @@ class Service
         @db.save obj, callback
 
     #Find view
-    find:(view,params,callback,returnKey)->
+    find:(view,params,callback,returnKey,obj)->
         @db.view view,params, (err,res)->
             if(err)
                 callback err
@@ -26,7 +26,10 @@ class Service
                         docs.push {key:key,value:row}
                     else
                         docs.push row
-                callback docs
+                if obj
+                    callback docs,obj
+                else 
+                    callback docs
                 return docs
 
     #Get Document by ids
