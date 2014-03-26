@@ -1,5 +1,5 @@
 # Follower Model
-class Configuration
+class ConfigurationModel
 
     constructor:(@id,@rev,@appid,@secret,@access_token,@expires_in,@token_created)->
 
@@ -39,14 +39,15 @@ class Configuration
 
         return @config
 
-        
+
     # created : unix timestamp
     # comparetor: unix timestamp
     # expires_in: default in weixin is 7200
     isExpired:(created,comparetor,expires_in=7200)->
-         offset = comparetor - created
-         if offset>=7200
-            return true
-        else
-            return false
-    module.exports = Configuration
+        result = false
+        offset = comparetor - created
+        result = true if offset>=7200
+        return result
+
+
+module.exports = ConfigurationModel
