@@ -34,6 +34,7 @@ exports.sendmsg = (access_token,open_id,type='text',content,callback)->
              content:content
         }
   }
+  console.log "send msg :" + access_token
   modelutil.postJson(host,path,access_token,json,callback);
 
 exports.getFollowersFromDB = (callback)->

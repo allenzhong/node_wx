@@ -98,7 +98,8 @@ exports.sendMsg = (req, res) ->
   msg = req.param("content")
   platform.getAccessToken (access_token) ->
     user.sendmsg access_token, open_id, "text", msg, (response) ->
-      res.send success: true  if response.statusCode is "200"
+      console.log "statusCode ->" +response.statusCode
+      res.send success: true  if response.statusCode == 200
 
 
 
