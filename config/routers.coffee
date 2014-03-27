@@ -34,6 +34,12 @@ exports.routerSettings = (app)->
     app.get "/admin/logout",routesAdmin.logout
     app.post "/admin/authenticate",routesAdmin.authenticate
 
+    #admin follower
+    app.get "/admin/follower/index/:id",routesAdmin.follower_index
+    app.get "/admin/follower/fresh",routesAdmin.follower_fresh
+    app.get "/admin/follower/update/:id",routesAdmin.follower_update
+
+
     app.get "/follower/:id", routes.follower
     app.get "/followers", routes.followers
     app.get "/sendMsg/:id", routes.sendMsg

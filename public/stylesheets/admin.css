@@ -1,0 +1,177 @@
+.navbar-static-top {
+    margin-bottom:20px;
+}
+
+i {
+    font-size: 16px;
+}
+.nav > li > a {
+    color: #787878;
+}
+footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #efefef;
+}
+/* count indicator near icons */
+
+.nav>li .count {
+    position: absolute;
+    bottom: 12px;
+    right: 6px;
+    font-size: 10px;
+    font-weight: normal;
+    background: rgba(51, 200, 51, 0.55);
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1em;
+    padding: 2px 4px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+}
+/* indent 2nd level */
+
+.list-unstyled li > ul > li {
+    margin-left: 10px;
+    padding: 8px;
+}
+.login-box {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-top: 2em;
+    /* Adjusts for spacing */
+}
+.login-box-cell {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
+.wmd-panel
+{
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 80%;
+  min-width: 300px;
+}
+
+.wmd-button-bar 
+{
+  width: 100%;
+  background-color: Silver; 
+}
+
+.wmd-input 
+{ 
+  height: 300px;
+  width: 100%;
+  background-color: White;
+  border: 1px solid DarkGray;
+}
+
+.wmd-preview 
+{ 
+  background-color: #c0e0ff; 
+}
+
+.wmd-button-row 
+{
+  position: relative; 
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  padding: 0px;  
+  height: 20px;
+}
+
+.wmd-spacer
+{
+  width: 1px; 
+  height: 20px; 
+  margin-left: 14px;
+  
+  position: absolute;
+  background-color: White;
+  display: inline-block; 
+  list-style: none;
+}
+
+.wmd-button {
+    width: 20px;
+    height: 20px;
+    padding-left: 2px;
+    padding-right: 3px;
+    position: absolute;
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+}
+
+.wmd-button > span {
+    background-image: url(/image/wmd-buttons.png);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.wmd-spacer1
+{
+    left: 50px;
+}
+.wmd-spacer2
+{
+    left: 175px;
+}
+.wmd-spacer3
+{
+    left: 300px;
+}
+.wmd-prompt-background
+{
+  background-color: White;
+}
+
+.wmd-prompt-dialog
+{
+  border: 1px solid #999999;
+  background-color: #F5F5F5;
+}
+
+.wmd-prompt-dialog > div {
+  font-size: 0.8em;
+  font-family: arial, helvetica, sans-serif;
+}
+
+
+.wmd-prompt-dialog > form > input[type="text"] {
+  border: 1px solid #999999;
+  color: black;
+}
+
+.wmd-prompt-dialog > form > input[type="button"]{
+  border: 1px solid #888888;
+  font-family: trebuchet MS, helvetica, sans-serif;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.fileupload{
+    position:absolute;
+    z-index:2;
+    top:0;
+    left:0;
+    filter: alpha(opacity=0);
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    opacity:0;
+    background-color:transparent;
+    color:transparent;
+}

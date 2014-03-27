@@ -50,20 +50,38 @@ exports.countFollowers = (callback)->
     service.count 'weixin/count_follower',(sum)->
       callback sum
 
+# If exists return else save id
+exports.saveFollowerIDWhenNotExistsInDB =isFollowerIDExistsInDB= (openid)->
+    db = configInstance.getDBConnection()
+    service = new FollowerService(db)
+    service.get  openid, (err,doc)->
+      console.log "!@@@doc ->" + doc
+      unless doc && doc.id == openid
+        saveOpenId(openid)
+      return
+    return
 
+saveOpenId = (id)->
+  follower = new FollowerModel(id,null,1,id)
+  obj = follower.getObject()
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  console.log "save Object -> "  + JSON.stringify(obj)
+  service.save obj,(err)->
+    if(err)
+      console.log err
+  return
 
 exports.saveFollowersOpenId = (json)->
   if (json.errcode)
     return
   console.log JSON.stringify(json.data.openid)
   array = json.data.openid
+  console.log array.length
   for id in array
     console.log "Id" + id
-    follower = new FollowerModel(id,null,1,id)
-    obj = follower.getObject()
-    db = configInstance.getDBConnection()
-    service = new FollowerService(db)
-    service.save obj,(err)->
+    isFollowerIDExistsInDB id,(result)->
+  return 
 
 exports.saveFollowerFullInfo = (json)->
     console.log "saveFollowerFullInfo" + JSON.stringify json
@@ -84,6 +102,8 @@ exports.saveFollowerFullInfo = (json)->
         follower.rev = doc.rev
         obj = follower.getObject()
         service.save obj,(err)->
+      return
+    return
 
 # save follower
 exports.saveFollower = (follower)->

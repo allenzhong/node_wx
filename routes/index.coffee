@@ -6,7 +6,7 @@ xmlreader = require("xmlreader")
 xmlbuilder = require("xmlbuilder")
 xmlLib = require("xml")
 message = require("../handler/message")
-user = require("../handler/user")
+user = require("../handler/follower")
 platform = require '../handler/platform'
 
 #
