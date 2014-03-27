@@ -2,7 +2,7 @@
 ##    Admin routers
 ###################################################
 Configuration = require '../config/config'
-Service = require '../service/Service'
+Service = require '../service/service'
 
 ConfigModel = require '../model/configuration'
 ConfigurationService = require '../service/configurationService'
