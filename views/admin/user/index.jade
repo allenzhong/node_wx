@@ -1,0 +1,57 @@
+extends ../layout
+block script
+    script(type='text/javascript', src="/javascripts/admin.js")
+    script(type='text/javascript', src="/javascripts/bootstrap-paginator.min.js")
+block content
+    script.
+            $(document).ready(function(){
+               $('.table tbody a.deleteUser').on('click',deleteBlog);
+               var total = #{numberOfPages};
+               var current = #{current};
+               var numberOfPages = #{numberOfPages};
+               var options = {
+               bootstrapMajorVersion:3,
+                    currentPage: current,
+                    totalPages: total,
+                    numberOfPages:numberOfPages,
+                    pageUrl: function(type, page, current){
+                        return "/admin/user/index/"+page;
+                    }
+                };
+                $('#paging-tool').bootstrapPaginator(options);
+            
+            });
+    ul.list-inline.pull-right
+        li
+            a(href = "/admin/user/add") 
+                i.glyphicon.glyphicon-plus-sign
+                |  Add User
+    a(href="#")
+        strong
+            i.glyphicon.glyphicon-user
+            | Users
+    table.table.table-striped
+        tr
+            th Name
+            th Email
+            th Revision
+            th  
+            th
+        - each item in docs
+            tr
+                td 
+                    a(href="/admin/user/show/" + item.id)
+                        i.glyphicon.glyphicon-eye-open
+                        |  #{item.name}
+                td= item.email
+                td= item.rev
+                td 
+                    a(href="/admin/user/update/" + item.id)
+                        i.glyphicon.glyphicon-edit
+                td
+                    unless item.name=="admin"
+                        a(class="deleteUser" ,href="/#" ,rel="#{item.id}",rev="#{item.rev}")
+                            i.glyphicon.glyphicon-remove-sign
+
+                        
+    ul(id="paging-tool")

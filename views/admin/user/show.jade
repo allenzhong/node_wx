@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    .panel.panel-default
+        .panel-heading
+           strong
+                i.glyphicon.glyphicon-list-alt
+                | Show User
+        .panel-body
+             article
+                 header
+                     h3= user.name
+                     h2= user.email
+                 section
+                     != user.rev

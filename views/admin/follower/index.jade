@@ -5,6 +5,7 @@ block script
             $(document).ready(function(){
                //$('.table tbody a.deleteUser').on('click',deleteBlog);
                var total = #{numberOfPages};
+               if(total!=0){
                var current = #{current};
                var numberOfPages = #{numberOfPages};
                var options = {
@@ -17,9 +18,11 @@ block script
                     }
                 };
                 $('#paging-tool').bootstrapPaginator(options);
+               }
+               
                 $("#fresh-followers").on('click',function(event){
                     event.preventDefault();
-                    alert("test");
+                    //alert("test");
                     $.ajax({
                          type:"GET",
                          url:"/admin/follower/fresh"
@@ -41,6 +44,35 @@ block script
                         window.location = response.redirect;
                     });
                 });
+                $("a[rel='sendid']").on('click',function(){
+                      var sendid = $(this).attr("rel1");
+                      var sendname =  $("#name-"+sendid).html();
+                        //should popup a modle and send message to this open id
+                      $("#myModal").modal();
+                      $("#myModal #send_open_id").html(sendid);
+                      $("#myModal #send_name").html(sendname);
+                      $("input#input_open_id").val(sendid);
+                });//-- send id click
+              //modal msg send button
+               $("#btn_send_msg").on('click',function(){
+                  var msg = $("#txt_send_msg").val();
+                  var openid = $("input#input_open_id").val();
+                  var sendname = $("#myModal #send_name").html();
+                  $.ajax({
+                      type:"GET",
+                      url:"/sendMsg/"+openid,
+                      data:{
+                        content:msg
+                      }
+                      }).done(function(res){
+                        if(res.success){
+                            $("#myModal #send_open_id").html("");
+                            $("#myModal #send_name").html("");
+                            $("input#input_open_id").val("");
+                            $("#myModal").modal('hide');
+                        }
+                    });
+                });//-- modal msg send button
             });
 block content
     
@@ -57,22 +89,49 @@ block content
         tr
             th Open ID
             th Name
+            th Sex
             th Address
             th  
             th
         - each item in docs
             tr
                 td 
-                    a( href="/admin/follower/show/" + item.id)
+                    a( href="#" + item.id,rel="openid",rel1="#{item.openid}")
                         i.glyphicon.glyphicon-eye-open
                         |  #{item.id}
-                td!= item.nickname
-                td!= item.sex
+                td(id="name-#{item.openid}")!= item.nickname
+                td
+                    if item.sex && item.sex == 1
+                        | M
+                    else if  item.sex == 0
+                        | F
+
                 td 
                     !=item.province 
+                    |  
                     !=item.city
                 td 
                     a(href="#" + item.id,rel="#{item.id}",rel1="update-follower")
                         i.glyphicon.glyphicon-search                   
-                        
+                td
+                    a(href="#",rel="sendid", rel1= "#{item.openid}")
+                        i.glyphicon.glyphicon-envelope   
+
     ul(id="paging-tool")
+
+    #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+              h4#myModalLabel.modal-title Send Message to                 
+               label#send_name
+               label#send_open_id 
+            .modal-body
+               input#input_open_id(type="hidden")
+               input#txt_send_msg.form-control(type="text")
+            .modal-footer
+              button#btn_send_msg.btn.btn-default(type='button') 
+                i.glyphicon.glyphicon-envelope
+                | Send
+              button.btn.btn-default(type='button', data-dismiss='modal') Close

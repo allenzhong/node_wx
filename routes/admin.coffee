@@ -4,6 +4,8 @@
 Configuration = require '../config/config'
 Service = require '../service/Service'
 
+ConfigModel = require '../model/configuration'
+ConfigurationService = require '../service/configurationService'
 UserModel = require '../model/user'
 UserService = require '../service/UserService'
 FollowerModel = require '../model/follower'
@@ -117,4 +119,121 @@ exports.follower_update = (req,res)->
             followerHandler.saveFollowerFullInfo json
             res.json({redirect:"/admin/follower/index"})
 
-               
+# Send msg to user
+exports.follower_sendMsg = (req, res) ->
+  open_id = req.param("id")
+  msg = req.param("content")
+  platform.getAccessToken (access_token) ->
+    user.sendmsg access_token, open_id, "text", msg, (response) ->
+      # console.log "statusCode ->" +response.statusCode
+      res.send success: true  if response.statusCode == 200              
+
+#########################################################
+################### Admin  User   #############################
+#########################################################
+## index ##
+# index page: show user list,comment list,and add/delete/update user func buttons
+# And Some system func menus
+exports.user_index = user_index = (req,res)->
+    page = 1
+    if req.params.id
+        page = parseInt(req.params.id)
+    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    #logger.info("entering admin index page")
+    dbConnection = configInstance.getDBConnection()
+    service = new UserService(dbConnection)
+    docs = service.find 'weixin/user',param ,(docs)->
+        console.log "docs - >"+JSON.stringify(docs)
+        users = service.parseDocs(docs)
+        paging users,page,'weixin/count_user',(json)->
+            res.render 'admin/user/index' , json     
+
+#Show Add Post Page
+exports.user_add = user_add = (req,res)->
+    #console.log "Add Post"
+    res.render 'admin/user/add' 
+
+#Show Update User Page
+exports.user_update = user_update = (req,res)->
+    #console.log "show user"
+    dbConnection = configInstance.getDBConnection()
+    service = new UserService(dbConnection)
+    query_id = req.param('id')
+    service.get query_id, (err,doc)->
+        res.render 'admin/user/update',{user:doc}
+
+#Save Post
+exports.user_save = user_savePost = (req,res)->
+
+    if(req.param('id'))
+        #console.log "update user"
+        welcomeUser = new UserModel(req.param('id'),req.param('rev'),req.param('name'),req.param('password'),req.param('email'))
+    else
+        #console.log "new user"
+        welcomeUser =  new UserModel(null,null,req.param('name'),req.param('password'),req.param('email'))
+    dbConnection = configInstance.getDBConnection()
+    service = new UserService(dbConnection)
+    objUser = welcomeUser.getObject()
+    service.save objUser,(err,ress)->
+        if err
+            #console.log "Error in welcome user Create"  
+        else
+            res.redirect "admin/user/index"
+
+#Show user page
+exports.user_show = user_show = (req,res)->
+    #console.log "show user"
+    dbConnection = configInstance.getDBConnection()
+    service = new UserService(dbConnection)
+    query_id = req.param('id')
+    service.get query_id, (err,doc)->
+        if doc.resource=='user'
+            res.render 'admin/user/show',{user:doc}
+        else
+            res.render '404',{url:req.url}
+#Delete user
+exports.user_delete = user_delete = (req,res)->
+    #logger.info("delete id:"+req.params["id"]+" rev:" +req.param("rev"))
+    dbConnection = configInstance.getDBConnection()
+    service = new BlogService(dbConnection)
+    delete_id = req.param('id')
+    delete_rev = req.param("rev")
+    service.delete delete_id,delete_rev,(err,rs)->
+        if(err)
+            #logger.info(err)
+            res.json({msg:err.error + " : " + err.reason})
+#########################################################
+################### Admin  User  End##########################
+######################################################### 
+
+#########################################################
+################### Admin  Config  ###########################
+######################################################### 
+# Index Config, Show Configurations List
+exports.config_index = (req,res)->
+    dbConnection = configInstance.getDBConnection()
+    service = new ConfigurationService(dbConnection)
+    service.check (config)->
+        res.render "admin/config/index",{config:config}
+
+# update Token and redirect to admin/config/index
+exports.config_updateToken = (req,res)->
+    platformHandler.requestAndUpdateAccessToken () ->
+        res.json({redirect:"/admin/config/index/"})
+
+# save Config , now just save appid and secret
+exports.config_save = (req,res)->
+    appid = req.param("appid")
+    secret = req.param("secret")
+    console.log "appid:->" + appid
+    console.log "secret:->" + secret
+    dbConnection = configInstance.getDBConnection()
+    service = new ConfigurationService(dbConnection)
+    service.check (config)->
+        config.appid = appid
+        config.secret = secret
+        # console.log "Object -> " + JSON.stringify(config.getObject())
+        service.save config.getObject(),(err,ress)->
+            res.redirect "/admin/config/index/"
+    return
+

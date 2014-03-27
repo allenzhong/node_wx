@@ -1,36 +1,19 @@
 extends layout
 
 block content
-    ul.list-inline.pull-right
-        li
-            a(href="#")
-                i.glyphicon.glyphicon-plus-sign
-                |  Add Blog
-    a(href="#")
-        strong
-        i.glyphicon.glyphicon-dashboard
-        | Blogs
+    .panel.panel-default
+        .panel-heading
+            h4
+                i.glyphicon.glyphicon-th-list
+                |   Welcome To Admin Console
 
-    table.table.table-striped
-        tr
-            th ID
-            th Name
-            th Email
-            th Revision
-            th  
-            th
-        tr
-            td 
-                a(href="#")
-                    i.glyphicon.glyphicon-eye-open
-                    |   Test
-            td Test
-            td Test
-            td Test
-            td 
-                a(href="#")
-                    i.glyphicon.glyphicon-edit
-            td
-                a(href="#")
-                    i.glyphicon.glyphicon-remove-sign
-        
+        .panel-body
+            .content
+                p
+                    | Follower : List , Send Message
+                p
+                    | Message : Building 
+                p
+                    | Configuration: Update Token, Set appid and secret
+                p 
+                    | User: Admin Console User Management

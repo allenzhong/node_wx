@@ -1,0 +1,46 @@
+extends ../layout
+block script 
+    link(href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" ,rel="stylesheet")
+    script(type="text/javascript", src="/javascript/admin.js")
+    script.
+      $(document).ready(function(){
+           $('input:password').on('change',confirmPassword);
+           $("input[name='submitUser']").click(submitUser);
+        });
+block content
+    .panel.panel-default
+        .panel-heading
+            strong
+                i.glyphicon.glyphicon-list-alt
+                | Update User
+        .panel-body
+            form(name="addUser", action="/admin/user/save", method="post")
+                input(type="hidden",name="id",value="#{user.id}")
+                input(type="hidden",name="rev",value="#{user.rev}")
+                .form-group
+                       .row
+                          .col-xs-10.col-md-8
+                              label User Name
+                              input.form-control(type="text",name="name",size=100,value="#{user.name}")
+                .form-group
+                       .row
+                          .col-xs-10.col-md-8
+                              label Email              
+                              input.form-control(type="text",name="email",size=100,value="#{user.email}")
+                .form-group
+                   .row
+                      .col-xs-10.col-md-8
+                          label New Password
+                          input.form-control(type="password",name="password",size=100)
+                          i(rel='isValid',class="fa fa-check-square" ,style="display:none;margin-left:3px;width:10px;")
+                .form-group
+                   .row
+                      .col-xs-10.col-md-8
+                          label Confirm New Password
+                          input.form-control(type="password",name="c_password",size=100)
+                          i(rel='isValid',class="fa fa-check-square" ,style="display:none;margin-left:3px;width:10px;")
+               .form-group
+                   .row
+                       .col-xs-8.col-md-8
+                           input(type="button", name="submitUser" ,value="Update User")
+                           input(type='hidden',name="checkPassword",value="false")

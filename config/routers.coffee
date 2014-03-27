@@ -38,7 +38,20 @@ exports.routerSettings = (app)->
     app.get "/admin/follower/index/:id",routesAdmin.follower_index
     app.get "/admin/follower/fresh",routesAdmin.follower_fresh
     app.get "/admin/follower/update/:id",routesAdmin.follower_update
+    app.get "/admin/follower/sendMsg/:id", routesAdmin.follower_sendMsg
 
+    #admin user routes
+    app.get "/admin/user/index/:id",routesAdmin.user_index
+    app.get "/admin/user/add",routesAdmin.user_add
+    app.post "/admin/user/save",routesAdmin.user_save
+    app.get "/admin/user/show/:id",routesAdmin.user_show
+    app.get "/admin/user/update/:id", routesAdmin.user_update
+    app.del "/admin/user/delete/:id",routesAdmin.user_delete
+
+    #admin config routes
+    app.get "/admin/config/index",routesAdmin.config_index
+    app.get "/admin/config/updateToken",routesAdmin.config_updateToken
+    app.post "/admin/config/save",routesAdmin.config_save
 
     app.get "/follower/:id", routes.follower
     app.get "/followers", routes.followers

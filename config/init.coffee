@@ -33,7 +33,7 @@ dbConnection.exists (err,exists)->
 
 init = (dbConnection)->
     #Create Admin User And User's View
-    adminUser = new UserModel(null,null,'admin','admin','zhong.allen@gmail.com')
+    adminUser = new UserModel(null,null,'admin','ultuum123456','zhong.allen@gmail.com')
     #save admin user
     userService = new UserService(dbConnection)
     obj = adminUser.getObject()
@@ -44,7 +44,7 @@ init = (dbConnection)->
         else
             console.log "Admin is created"
 
-    testUser = new UserModel(null,null,'test','test','test@gmail.com')
+    testUser = new UserModel(null,null,'test','test_ultuum','test@gmail.com')
     obj = testUser.getObject()
     console.log obj
     userService.save obj,(err,res)->

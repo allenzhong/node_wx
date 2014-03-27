@@ -32,10 +32,21 @@ exports.checkSignature = (req) ->
     return false
 
 configInstance = Configuration.getInstance()
+
+# get sysconfig object
+# callback(config)
+sysconfig = (callback)->
+  db = configInstance.getDBConnection()
+  service = new ConfigurationService(db)
+  service.check (config)->
+    callback config
+
+
 appID = "wxba50ad44bb9be2db"
 appsecrect = "1e46b3602cd99f55154bcb8d1a8b1b25"
 accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
 createMenuUrl = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s"
+
 
 #Get Access Token,GET
 #callback(token)
@@ -60,29 +71,31 @@ exports.getAccessToken = (callback) ->
 
 # Request access token from server and save/update it
 exports.requestAndUpdateAccessToken=requestAndUpdateAccessToken = (callback)->
-  url = util.format(accessTokenUrl, appID, appsecrect)
-  # console.log "access url :" + url
-  # json = {
-  #   access_token:"4rC-ik7TPl2Iy53mgc2aBg8Vnlr-2iW_I9Cp8kqe38uUpqaAiKYgdxyaurXF9AAm7Gz6XwWSm4DV6T1WPzpRy44V8BFSJyn_eqEPDG4___UPhfDgQlvtv9eVLOBocOfRDS-q-oiPIILJOK6sbgfoFg",
-  #   expires_in:7200
-  # }
-  # if !isErrorInAccessToken(json)
-  #       console.log "Save token :" + json
-  #       saveAccessToken(json)
-  # console.log "From Server get toke :-> " + json.access_token
-  # callback json.access_token
-  https.get url, (res) ->
-    body = ""
-    res.on "data", (d) ->
-      body += d
-    res.on "end", ->
-      console.log "body: " + body
-      json = JSON.parse(body)
-      if !isErrorInAccessToken(json)
-        console.log "Save token :" + body
-        saveAccessToken(json)
-      console.log "From Server get toke :-> " + json.access_token
-      callback json.access_token
+  sysconfig (config)->
+    console.log config.appid + " : " + config.secret
+    url = util.format(accessTokenUrl, config.appid, config.secret)
+    console.log "access url :" + url
+    # json = {
+    #   access_token:"4rC-ik7TPl2Iy53mgc2aBg8Vnlr-2iW_I9Cp8kqe38uUpqaAiKYgdxyaurXF9AAm7Gz6XwWSm4DV6T1WPzpRy44V8BFSJyn_eqEPDG4___UPhfDgQlvtv9eVLOBocOfRDS-q-oiPIILJOK6sbgfoFg",
+    #   expires_in:7200
+    # }
+    # if !isErrorInAccessToken(json)
+    #       console.log "Save token :" + json
+    #       saveAccessToken(json)
+    # console.log "From Server get toke :-> " + json.access_token
+    # callback json.access_token
+    https.get url, (res) ->
+      body = ""
+      res.on "data", (d) ->
+        body += d
+      res.on "end", ->
+        console.log "body: " + body
+        json = JSON.parse(body)
+        if !isErrorInAccessToken(json)
+          console.log "Save token :" + body
+          saveAccessToken(json)
+        console.log "From Server get toke :-> " + json.access_token
+        callback json.access_token
 
 
 # If errcode is exists, return true
