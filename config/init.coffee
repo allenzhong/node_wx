@@ -83,6 +83,16 @@ init = (dbConnection)->
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },
+                        user_by_email:{
+                            map:(doc)->
+                                if(doc.resource=='user')
+                                    return emit doc.email ,doc
+                        },
+                        user_by_name:{
+                            map:(doc)->
+                                if(doc.resource=='user')
+                                    return emit doc.name ,doc
+                        },
                         config:{
                             map:(doc)->
                                 if(doc.resource == 'config')

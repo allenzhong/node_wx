@@ -18,13 +18,13 @@ class UserService extends Service
             return false
         #then must define a general view that can find by name&email
         #!!!!!! how to resolve Async method,Thinking~~~~~~~~
-        find 'blog/user_find_by_name_or_email',null,(docs)->
+        find 'weixin/user_find_by_name_or_email',null,(docs)->
 
 
     # Authenticate user name and password 
     authenticate:(name,password,fn)->
         #console.log "new user " + name + " passwd: " + password
-        docs = this.find 'blog/user_by_name',{ key: name },(docs)->
+        docs = this.find 'weixin/user_by_name',{ key: name },(docs)->
             #console.log "Get login docs ->" + JSON.stringify docs
             loginSuccess = false
             if docs

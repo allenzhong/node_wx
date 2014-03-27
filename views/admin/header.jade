@@ -1,0 +1,28 @@
+// Header
+div#top-nav.navbar.navbar-inverse.navbar-static-top
+    .container
+        .navbar-header
+            button.navbar-toggle(type="button", data-toggle="collapse" ,data-target=".navbar-collapse")
+                span.icon-toggle
+                    i.glyphicon.glyphicon-plus
+            a.navbar-brand(href="#") Admin Console
+        div.navbar-collapse.collapse
+            ul.nav.navbar-nav.navbar-right
+                if session.user_id
+                    li.dropdown
+                        a.dropdown-toggle(role="button",data-toggle="dropdown" ,href="#")
+                            i.glyphicon.glyphicon-user  
+                            |  #{session.user.name}
+                            span.caret
+                        ul#g-account-menu.dropdown-menu(role="menu")
+                            li
+                                a(href="#") My Profile
+                li
+                    if session.user_id
+                        a(href="/admin/logout")
+                            i.glyphicon.glyphicon-lock 
+                                | Logout
+                    else
+                        a(href="/admin/login")
+                            i.glyphicon.glyphicon-lock 
+                                | Login

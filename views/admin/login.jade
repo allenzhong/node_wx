@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .row.login-box(style="height: 600px;")
+         .col-lg-offset-2.col-md-6.login-box-cell
+             form(name="login", action="/admin/authenticate", method="post",role="form")
+                 .input-group.form-group.input-group-lg
+                    span.input-group-addon
+                        i.glyphicon.glyphicon-user
+                    input.form-control(type="text",name="name",placeholder="Username")
+                 .input-group.form-group.input-group-lg
+                    span.input-group-addon
+                         i.glyphicon.glyphicon-lock
+                    input.form-control(type="password",name="password",placeholder="Password")
+                 
+                 input.btn.btn-default(type="submit", value="Login")

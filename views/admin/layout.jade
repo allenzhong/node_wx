@@ -1,0 +1,38 @@
+doctype
+html
+    head
+        meta(http-equiv="content-type",content="text/html; charset=UTF-8")
+        title
+            | Adiantum Admin Console
+        meta(name="generator",content="Bootply")
+        meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
+        //link(href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css",rel="stylesheet")
+        link(href="/stylesheets/bootstrap.min.css",rel="stylesheet")
+        link(rel='stylesheet', href='/stylesheets/admin.css')
+        script(type='text/javascript',src="/javascripts/jquery.min.js")
+        script(type='text/javascript', src="/javascripts/bootstrap.min.js")
+        block script
+        //script(type='text/javascript',src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+        //script(type='text/javascript', src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js")
+    body
+        //header
+        include header
+        // Main
+        .container
+            .row
+               .col-xs-12.col-sm-10.col-md-2   
+                    include sidebar
+                // col-md-9
+               .col-xs-12.col-sm-10.col-md-10                
+                    block content
+        //include footer
+
+        script.
+           $(document).ready(function() {     
+            $(".alert").addClass("in").fadeOut(4500);
+            /* swap open/close side menu icons */
+            $('[data-toggle=collapse]').click(function(){
+             // toggle icon
+             $(this).find("i").toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
+            });          
+           });
