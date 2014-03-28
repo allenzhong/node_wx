@@ -8,7 +8,7 @@ class Message
         # after used features ,delete it.
         delete this["features"]
         @resource =  "message"
-        
+
     defineProperty:(type,features)->
         if(type=="text")
             @Content = features.Content
@@ -36,12 +36,13 @@ class Message
         @id = doc._id
         @rev = doc._rev
         @ToUserName = doc.ToUserName
-        @FromUserName = doc.CreateTime
+        @FromUserName = doc.FromUserName
         @CreateTime = doc.CreateTime
         @MsgType = doc.MsgType
         @MsgId  = doc.MsgId
         this.defineProperty(doc.MsgType,doc)
         @resource =  "message"
+        return
 
     setObject:(obj)->
         @id = obj.id unless obj.id
@@ -56,41 +57,41 @@ class Message
         return null
 
     getObject:->
-        # @message = {
-        #     ToUserName:@ToUserName,
-        #     FromUserName:@FromUserName,
-        #     CreateTime:@CreateTime,
-        #     MsgType:@MsgType,
-        #     MsgId:@MsgId
-        #     resource :"message"
-        # }
-        # @message['_id']=@id if @id
-        # @message['_rev']=@rev if@rev
-        # getProperty(@message)
+        @message = {
+            ToUserName:@ToUserName,
+            FromUserName:@FromUserName,
+            CreateTime:@CreateTime,
+            MsgType:@MsgType,
+            MsgId:@MsgId
+            resource :"message"
+        }
+        @message['_id']=@id if @id
+        @message['_rev']=@rev if@rev
+        getProperty(@message)
         return this
 
-    # getProperty:(obj)->
-    #     if(obj.MsgType=="text")
-    #         obj['Content'] = @Content
-    #     else if(obj.MsgType=="image")
-    #         obj['PicUrl'] = @PicUrl
-    #         obj['MediaId'] = @MediaId
-    #     else if(obj.MsgType=="voice")
-    #         obj['Format'] = @Format
-    #         obj['MediaId'] = @MediaId
-    #     else if(obj.MsgType=="video")
-    #         obj['ThumbMediaId'] = @ThumbMediaId
-    #         obj['MediaId'] = @MediaId
-    #     else if(obj.MsgType=="location")
-    #         obj['Location_X'] = @Location_X
-    #         obj['Location_Y'] = @Location_Y
-    #         obj['Scale'] = @Scale
-    #         obj['Label'] = @Label
-    #     else if(obj.MsgType=="link")
-    #         obj['Title'] = @Title
-    #         obj['Description'] = @Description
-    #         obj['Url'] = @Url
-    #         obj['MsgId'] = @MsgId  
+    getProperty:(obj)->
+        if(obj.MsgType=="text")
+            obj['Content'] = @Content
+        else if(obj.MsgType=="image")
+            obj['PicUrl'] = @PicUrl
+            obj['MediaId'] = @MediaId
+        else if(obj.MsgType=="voice")
+            obj['Format'] = @Format
+            obj['MediaId'] = @MediaId
+        else if(obj.MsgType=="video")
+            obj['ThumbMediaId'] = @ThumbMediaId
+            obj['MediaId'] = @MediaId
+        else if(obj.MsgType=="location")
+            obj['Location_X'] = @Location_X
+            obj['Location_Y'] = @Location_Y
+            obj['Scale'] = @Scale
+            obj['Label'] = @Label
+        else if(obj.MsgType=="link")
+            obj['Title'] = @Title
+            obj['Description'] = @Description
+            obj['Url'] = @Url
+            obj['MsgId'] = @MsgId  
 
 
 module.exports = Message

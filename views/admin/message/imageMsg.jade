@@ -1,0 +1,74 @@
+extends ../layout
+block script
+    script(type='text/javascript', src="/javascripts/admin.js")
+    script(type='text/javascript', src="/javascripts/bootstrap-paginator.min.js")
+    script.
+            $(document).ready(function(){
+               //$('.table tbody a.deleteUser').on('click',deleteBlog);
+               var page_type = "#{type}";
+               var total = #{numberOfPages};
+               if(total>0){
+                   var current = #{current};
+                   var numberOfPages = #{numberOfPages};
+                   var options = {
+                   bootstrapMajorVersion:3,
+                        currentPage: current,
+                        totalPages: total,
+                        numberOfPages:numberOfPages,
+                        pageUrl: function(type, page, current){
+                            return "/admin/message/type/" + page_type +"/" + page;
+                        }
+                    };
+                    $('#paging-tool').bootstrapPaginator(options);
+                }
+            });
+block content
+
+    .nav
+        li.list-inline.pull-right
+                a.btn.btn-default(href = "javascript:window.location='/admin/message/index/'") 
+                    i.glyphicon.glyphicon-refresh
+                    |  Refresh
+        
+        li.list-inline.pull-left
+            strong
+                i.glyphicon.glyphicon-envelope
+                |   Messages
+
+    ui.nav.nav-tabs
+        li
+            a(href="/admin/message/index") All
+        li
+            a(href="/admin/message/type/text/") Text
+        li.active
+            a(href="/admin/message/type/image/") Image
+        li
+            a(href="/admin/message/type/voice/") Voice
+        li
+            a(href="/admin/message/type/video/") Video
+        li
+            a(href="/admin/message/type/location/") Location
+        li
+            a(href="/admin/message/type/link/") Link
+
+    table.table.table-striped.col-md-10
+        tr
+            th ToUser
+            th FromUser
+            th MsgType
+            th Created At
+            th
+        - each item in docs
+            tr
+                td 
+                    a(href="#" + item.ToUserName)
+                        i.glyphicon.glyphicon-eye-open
+                        |  #{item.ToUserName}
+                td= item.FromUserName
+                td= item.MsgType
+                td= item.CreateTime
+                td
+                    if item.Content
+                        | #{item.Content}
+                    
+    ul(id="paging-tool")

@@ -13,6 +13,7 @@ adminfilter = (req,res,next)->
 doAdminAction = (req,res,next)->
     module = req.params.module
     action = req.params.action
+    console.log "module " + module + " action " + action
     if(module==undefined && action!=undefined)
         routesAdmin[action](req,res,next)
     else if (module!=undefined && action!=undefined)
@@ -26,7 +27,9 @@ exports.routerSettings = (app)->
     #admin filters of routes
     app.get "/admin/:action",adminfilter,doAdminAction
     app.get "/admin/:module/:action",adminfilter,doAdminAction
-    app.get "/admin/:module/:action/:id",adminfilter,doAdminAction
+    app.get "/admin/:module/:action/:id(^\d{1,10})$",adminfilter,doAdminAction
+    app.get "/admin/:module/:action/:type",adminfilter,doAdminAction
+    app.get "/admin/:module/:action/:type/:id(^\d{1,10})$",adminfilter,doAdminAction
     #admin routes
     app.get "/admin", routesAdmin.index
     app.get "/admin/index",routesAdmin.index
@@ -53,11 +56,12 @@ exports.routerSettings = (app)->
     app.get "/admin/config/updateToken",routesAdmin.config_updateToken
     app.post "/admin/config/save",routesAdmin.config_save
 
-    app.get "/follower/:id", routes.follower
-    app.get "/followers", routes.followers
-    app.get "/sendMsg/:id", routes.sendMsg
-    app.get "/createMenu", routes.create_menu
-    app.get "/updateToken",routes.updateToken
+    #admin message routes
+    app.get '/admin/message/type/:type/:id',routesAdmin.message_type
+    app.get '/admin/message/index/:id(\d*)',routesAdmin.message_index
+
+
+    #Core message routes
     app.post "/", (req, res, next) ->
       data = ""
       req.setEncoding "utf8"
@@ -70,4 +74,11 @@ exports.routerSettings = (app)->
         routes.doMessage req, res
         return
 
+    #deprecated routes
+    app.get "/follower/:id", routes.follower
+    app.get "/followers", routes.followers
+    app.get "/sendMsg/:id", routes.sendMsg
+    app.get "/createMenu", routes.create_menu
+    app.get "/updateToken",routes.updateToken
+    
     return

@@ -6,6 +6,8 @@ Service = require '../service/service'
 
 ConfigModel = require '../model/configuration'
 ConfigurationService = require '../service/configurationService'
+MessageModel = require '../model/message'
+MessageService = require '../service/messageService'
 UserModel = require '../model/user'
 UserService = require '../service/userService'
 FollowerModel = require '../model/follower'
@@ -237,3 +239,49 @@ exports.config_save = (req,res)->
             res.redirect "/admin/config/index/"
     return
 
+#########################################################
+################### Admin  Config  End# #######################
+######################################################### 
+
+#########################################################
+################### Admin  Message  ##########################
+######################################################### 
+exports.message_index = message_index = (req,res)->
+    console.log "Index page"
+    # get type
+    type = req.params.type
+    # console.log type
+    page = 1
+    if req.params.id
+        page = parseInt(req.params.id)
+    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    # logger.info("entering admin index page")
+    dbConnection = configInstance.getDBConnection()
+    service = new MessageService(dbConnection)
+    docs = service.find 'weixin/message',param ,(docs)->
+        console.log "docs - >"+JSON.stringify(docs)
+        users = service.parseDocs(docs)
+        paging users,page,'weixin/count_message',(json)->
+            res.render 'admin/message/index' , json     
+
+exports.message_type = message_type = (req,res)->
+    # console.log req.param("type")
+    unless req.params.type
+        message_index(req,res)
+        return
+    else
+        type = req.params.type
+    page = 1
+    if req.params.id
+        page = parseInt(req.params.id)
+    # console.log page    
+    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    #logger.info("entering admin index page")
+    dbConnection = configInstance.getDBConnection()
+    service = new MessageService(dbConnection)
+    docs = service.find 'weixin/message_'+type,param ,(docs)->
+        console.log "docs - >"+JSON.stringify(docs)
+        users = service.parseDocs(docs)
+        paging users,page,'weixin/count_message_'+type,(json)->
+            json['type'] = type
+            res.render 'admin/message/'+type+"Msg" , json     
