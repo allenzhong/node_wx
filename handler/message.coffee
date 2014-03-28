@@ -1,7 +1,11 @@
 #For recive message and send message with different types
 xmlreader = require("xmlreader")
 xmlbuilder = require("xmlbuilder")
-
+Configuration = require '../config/config'
+MessageModel = require "../model/message"
+MessageService = require("../service/messageService")
+#Get config singleton instance
+configInstance = Configuration.getInstance()
 #Handle Message,Return Json as Parameter to Callback method
 #callback(sending xml)
 exports.handleMsg = (xml, callback) ->
@@ -10,11 +14,19 @@ exports.handleMsg = (xml, callback) ->
       console.log "it's event ->" + JSON.stringify(json)
       buildEvent json, callback
     else
+      saveMessage(json)
       buildXml json, callback
     return
 
   return
 
+saveMessage = (json)->
+  console.log "saveMessage"
+  dbConnection = configInstance.getDBConnection()
+  msg = new MessageModel(null,null,json.ToUserName,json.FromUserName,json.CreateTime,json.MsgType,json)
+  # msg.setObject()
+  service = new MessageService(dbConnection)
+  service.save msg,(err,obj)->
 
 #Handle xml 
 #callback(json)

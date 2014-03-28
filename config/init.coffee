@@ -126,6 +126,90 @@ init = (dbConnection)->
                             map:(doc)->
                                 if(doc.resource=='follower')
                                     return emit doc.nickname ,doc
+                        },
+                        message:{
+                            map:(doc)->
+                                if(doc.resource == 'message')
+                                    return emit doc._id,doc
+                        },
+                        count_message:{
+                            map:(doc)->
+                                if(doc.resource=='message')
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        },  
+                        message_text:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="text")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_text:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="text")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        }, 
+                        message_image:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="image")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_image:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="image")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        }, 
+                        message_voice:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="voice")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_voice:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="voice")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        }, 
+                        message_video:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="video")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_video:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="video")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        }, 
+                        message_location:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="location")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_location:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="location")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
+                        }, 
+                        message_link:{
+                            map:(doc)->
+                                if(doc.resource == 'message' && doc.MsgType=="link")
+                                    return emit doc._id,doc
+                        },                       
+                        count_message_link:{
+                            map:(doc)->
+                                if(doc.resource=='message'&& doc.MsgType=="link")
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)
                         }
                     }
                 }
