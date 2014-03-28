@@ -37,7 +37,7 @@ block script
                     //alert(rel);
                     ///admin/follower/update/
                     $.ajax({
-                         type:"GET",
+                         type:"POST",
                          url:"/admin/follower/update/"+rel
                     }).done(function(response){
                     if(response.redirect)

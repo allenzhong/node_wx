@@ -28,6 +28,7 @@ exports.routerSettings = (app)->
     app.get "/admin/:action",adminfilter,doAdminAction
     app.get "/admin/:module/:action",adminfilter,doAdminAction
     app.get "/admin/:module/:action/:id(^\d{1,10})$",adminfilter,doAdminAction
+    app.post "/admin/:module/:action/:id",adminfilter,doAdminAction
     app.get "/admin/:module/:action/:type",adminfilter,doAdminAction
     app.get "/admin/:module/:action/:type/:id(^\d{1,10})$",adminfilter,doAdminAction
     #admin routes

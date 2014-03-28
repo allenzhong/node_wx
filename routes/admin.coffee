@@ -26,7 +26,7 @@ AdminPageNum = configInstance.AdminPageNum
 #########################################################
 ################### Admin #################################
 #########################################################
-#admin index page, show admin #console's description
+#admin index page, show admin ##console's description
 exports.index = index = (req,res)->
     if req.session.user_id
         res.render 'admin/index'
@@ -39,14 +39,14 @@ exports.login = login = (req,res)->
 
 #Authenticate login information
 exports.authenticate = authenticate = (req,res)->
-    #console.log "authenticate"
+    ##console.log "authenticate"
     dbConnection = configInstance.getDBConnection()
     name = req.param("name")
     password = req.param("password")
     service = new UserService(dbConnection)
     service.authenticate name,password,(err,user)->
         if(err)
-            #console.log err
+            ##console.log err
             #handle login failed
             res.render 'admin/login'
         else
@@ -69,7 +69,7 @@ paging = (docs,page,countView,callback)->
     dbConnection = configInstance.getDBConnection()
     service = new Service(dbConnection)
     param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
-    # #console.log JSON.stringify 
+    # ##console.log JSON.stringify 
     service.count countView,(sum)->
         if sum%AdminPageNum == 0
             totalPages = sum/AdminPageNum
@@ -84,31 +84,31 @@ paging = (docs,page,countView,callback)->
 #########################################################
 #get Followers list
 exports.follower_index = follower_index = (req, res) ->
-    console.log "Enter index"
+    #console.log "Enter index"
     page = 1
     if req.params.id
         page = parseInt(req.params.id)
     dbConnection = configInstance.getDBConnection()
     service = new FollowerService(dbConnection)
     param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
-    console.log JSON.stringify param
+    #console.log JSON.stringify param
     docs = service.find 'weixin/follower',param,(docs)->
-        console.log "docs - >"+JSON.stringify(docs)
+        #console.log "docs - >"+JSON.stringify(docs)
         followers = service.parseDocs(docs)
         str = JSON.stringify docs
-        console.log "Enter index + " +  str
+        #console.log "Enter index + " +  str
         paging followers,page,'weixin/count_follower',(json)->
-            console.log "page index + " +  JSON.stringify json
+            #console.log "page index + " +  JSON.stringify json
             res.render 'admin/follower/index' , json
 
 # follower fresh and back to follower_index
 exports.follower_fresh = follower_fresh = (req,res)->
     platformHandler.getAccessToken (access_token) ->
-      # console.log "access token" + access_token
+      # #console.log "access token" + access_token
       # res.render "followers"
       followerHandler.countFollowers (sum)->
           followerHandler.getFollowers access_token, "", (json) ->
-            # console.log json.data
+            # #console.log json.data
             followerHandler.saveFollowersOpenId json
             res.json({redirect:"/admin/follower/index"})
 
@@ -127,7 +127,7 @@ exports.follower_sendMsg = (req, res) ->
   msg = req.param("content")
   platform.getAccessToken (access_token) ->
     user.sendmsg access_token, open_id, "text", msg, (response) ->
-      # console.log "statusCode ->" +response.statusCode
+      # #console.log "statusCode ->" +response.statusCode
       res.send success: true  if response.statusCode == 200              
 
 #########################################################
@@ -145,19 +145,19 @@ exports.user_index = user_index = (req,res)->
     dbConnection = configInstance.getDBConnection()
     service = new UserService(dbConnection)
     docs = service.find 'weixin/user',param ,(docs)->
-        console.log "docs - >"+JSON.stringify(docs)
+        #console.log "docs - >"+JSON.stringify(docs)
         users = service.parseDocs(docs)
         paging users,page,'weixin/count_user',(json)->
             res.render 'admin/user/index' , json     
 
 #Show Add Post Page
 exports.user_add = user_add = (req,res)->
-    #console.log "Add Post"
+    ##console.log "Add Post"
     res.render 'admin/user/add' 
 
 #Show Update User Page
 exports.user_update = user_update = (req,res)->
-    #console.log "show user"
+    ##console.log "show user"
     dbConnection = configInstance.getDBConnection()
     service = new UserService(dbConnection)
     query_id = req.param('id')
@@ -168,23 +168,23 @@ exports.user_update = user_update = (req,res)->
 exports.user_save = user_savePost = (req,res)->
 
     if(req.param('id'))
-        #console.log "update user"
+        ##console.log "update user"
         welcomeUser = new UserModel(req.param('id'),req.param('rev'),req.param('name'),req.param('password'),req.param('email'))
     else
-        #console.log "new user"
+        ##console.log "new user"
         welcomeUser =  new UserModel(null,null,req.param('name'),req.param('password'),req.param('email'))
     dbConnection = configInstance.getDBConnection()
     service = new UserService(dbConnection)
     objUser = welcomeUser.getObject()
     service.save objUser,(err,ress)->
         if err
-            #console.log "Error in welcome user Create"  
+            ##console.log "Error in welcome user Create"  
         else
             res.redirect "admin/user/index"
 
 #Show user page
 exports.user_show = user_show = (req,res)->
-    #console.log "show user"
+    ##console.log "show user"
     dbConnection = configInstance.getDBConnection()
     service = new UserService(dbConnection)
     query_id = req.param('id')
@@ -227,14 +227,14 @@ exports.config_updateToken = (req,res)->
 exports.config_save = (req,res)->
     appid = req.param("appid")
     secret = req.param("secret")
-    console.log "appid:->" + appid
-    console.log "secret:->" + secret
+    #console.log "appid:->" + appid
+    #console.log "secret:->" + secret
     dbConnection = configInstance.getDBConnection()
     service = new ConfigurationService(dbConnection)
     service.check (config)->
         config.appid = appid
         config.secret = secret
-        # console.log "Object -> " + JSON.stringify(config.getObject())
+        # #console.log "Object -> " + JSON.stringify(config.getObject())
         service.save config.getObject(),(err,ress)->
             res.redirect "/admin/config/index/"
     return
@@ -247,10 +247,10 @@ exports.config_save = (req,res)->
 ################### Admin  Message  ##########################
 ######################################################### 
 exports.message_index = message_index = (req,res)->
-    console.log "Index page"
+    #console.log "Index page"
     # get type
     type = req.params.type
-    # console.log type
+    # #console.log type
     page = 1
     if req.params.id
         page = parseInt(req.params.id)
@@ -259,13 +259,13 @@ exports.message_index = message_index = (req,res)->
     dbConnection = configInstance.getDBConnection()
     service = new MessageService(dbConnection)
     docs = service.find 'weixin/message',param ,(docs)->
-        console.log "docs - >"+JSON.stringify(docs)
+        #console.log "docs - >"+JSON.stringify(docs)
         users = service.parseDocs(docs)
         paging users,page,'weixin/count_message',(json)->
             res.render 'admin/message/index' , json     
 
 exports.message_type = message_type = (req,res)->
-    # console.log req.param("type")
+    # #console.log req.param("type")
     unless req.params.type
         message_index(req,res)
         return
@@ -274,13 +274,13 @@ exports.message_type = message_type = (req,res)->
     page = 1
     if req.params.id
         page = parseInt(req.params.id)
-    # console.log page    
+    # #console.log page    
     param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
     #logger.info("entering admin index page")
     dbConnection = configInstance.getDBConnection()
     service = new MessageService(dbConnection)
     docs = service.find 'weixin/message_'+type,param ,(docs)->
-        console.log "docs - >"+JSON.stringify(docs)
+        #console.log "docs - >"+JSON.stringify(docs)
         users = service.parseDocs(docs)
         paging users,page,'weixin/count_message_'+type,(json)->
             json['type'] = type
