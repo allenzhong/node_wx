@@ -130,7 +130,7 @@ init = (dbConnection)->
                         message:{
                             map:(doc)->
                                 if(doc.resource == 'message')
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },
                         count_message:{
                             map:(doc)->
@@ -142,7 +142,7 @@ init = (dbConnection)->
                         message_text:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="text")
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_text:{
                             map:(doc)->
@@ -154,7 +154,7 @@ init = (dbConnection)->
                         message_image:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="image")
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_image:{
                             map:(doc)->
@@ -166,7 +166,7 @@ init = (dbConnection)->
                         message_voice:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="voice")
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_voice:{
                             map:(doc)->
@@ -178,7 +178,7 @@ init = (dbConnection)->
                         message_video:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="video")
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_video:{
                             map:(doc)->
@@ -190,7 +190,7 @@ init = (dbConnection)->
                         message_location:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="location")
-                                    return emit doc._id,doc
+                                    rreturn emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_location:{
                             map:(doc)->
@@ -202,7 +202,7 @@ init = (dbConnection)->
                         message_link:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="link")
-                                    return emit doc._id,doc
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_link:{
                             map:(doc)->

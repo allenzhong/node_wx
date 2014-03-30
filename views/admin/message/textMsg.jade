@@ -52,22 +52,23 @@ block content
 
     table.table.table-striped.col-md-10
         tr
-            th ToUser
             th FromUser
             th MsgType
             th Created At
-            th
+            th Content
         - each item in docs
             tr
                 td 
-                    a(href="#" + item.ToUserName)
-                        i.glyphicon.glyphicon-eye-open
-                        |  #{item.ToUserName}
-                td= item.FromUserName
-                td= item.MsgType
-                td= item.CreateTime
-                td
-                    if item.Content
-                        | #{item.Content}
-                    
+                    if item.doc 
+                        a(href="#" + item.doc._id)
+                            i.glyphicon.glyphicon-eye-open
+                            if item.doc.nickname
+                                |  #{item.doc.nickname}
+                            else
+                                |  #{item.doc._id}
+                    else
+                        | #{ item.value.message.FromUserName}
+                td= item.value.message.MsgType
+                td= item.value.message.CreateTime
+                td= item.value.message.Content
     ul(id="paging-tool")

@@ -4,9 +4,10 @@ class Message
     # @features includes every type's feature properties which is got from weixin server
     # eg.  image include PicUrl and MediaId,except Content etc.
     constructor:(@id,@rev,@ToUserName,@FromUserName,@CreateTime,@MsgType,@features)->
-        this.defineProperty(@type,@features)
+        this.defineProperty(@MsgType,@features)
         # after used features ,delete it.
         delete this["features"]
+        console.log JSON.stringify this
         @resource =  "message"
 
     defineProperty:(type,features)->

@@ -61,14 +61,19 @@ block content
         - each item in docs
             tr
                 td 
-                    a(href="#" + item.ToUserName)
-                        i.glyphicon.glyphicon-eye-open
-                        |  #{item.ToUserName}
-                td= item.FromUserName
-                td= item.MsgType
-                td= item.CreateTime
+                    if item.doc 
+                        a(href="#" + item.doc._id)
+                            i.glyphicon.glyphicon-eye-open
+                            if item.doc.nickname
+                                |  #{item.doc.nickname}
+                            else
+                                |  #{item.doc._id}
+                    else
+                        | #{ item.value.message.FromUserName}
+                td= item.value.message.FromUserName
+                td= item.value.message.MsgType
+                td= item.value.message.CreateTime
                 td
-                    if item.Content
-                        | #{item.Content}
-                    
+                    a.link(target="_blank",href="http://maps.google.com/maps?q=#{item.value.message.Location_X},#{item.value.message.Location_Y}")
+                        i.glyphicon.glyphicon-map-marker
     ul(id="paging-tool")

@@ -254,14 +254,17 @@ exports.message_index = message_index = (req,res)->
     page = 1
     if req.params.id
         page = parseInt(req.params.id)
-    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    param = {
+            limit:AdminPageNum,
+            skip:(page-1)*AdminPageNum,
+            include_docs:true
+    } 
     # logger.info("entering admin index page")
     dbConnection = configInstance.getDBConnection()
     service = new MessageService(dbConnection)
     docs = service.find 'weixin/message',param ,(docs)->
-        #console.log "docs - >"+JSON.stringify(docs)
-        users = service.parseDocs(docs)
-        paging users,page,'weixin/count_message',(json)->
+        # console.log "docs - >"+JSON.stringify(docs)    
+        paging docs,page,'weixin/count_message',(json)->
             res.render 'admin/message/index' , json     
 
 exports.message_type = message_type = (req,res)->
@@ -275,13 +278,16 @@ exports.message_type = message_type = (req,res)->
     if req.params.id
         page = parseInt(req.params.id)
     # #console.log page    
-    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    param = {
+            limit:AdminPageNum,
+            skip:(page-1)*AdminPageNum,
+            include_docs:true
+    } 
     #logger.info("entering admin index page")
     dbConnection = configInstance.getDBConnection()
     service = new MessageService(dbConnection)
     docs = service.find 'weixin/message_'+type,param ,(docs)->
-        #console.log "docs - >"+JSON.stringify(docs)
-        users = service.parseDocs(docs)
-        paging users,page,'weixin/count_message_'+type,(json)->
+        #console.log "docs - >"+JSON.stringify(docs)     
+        paging docs,page,'weixin/count_message_'+type,(json)->
             json['type'] = type
             res.render 'admin/message/'+type+"Msg" , json     

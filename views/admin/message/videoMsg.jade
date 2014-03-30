@@ -61,9 +61,15 @@ block content
         - each item in docs
             tr
                 td 
-                    a(href="#" + item.ToUserName)
-                        i.glyphicon.glyphicon-eye-open
-                        |  #{item.ToUserName}
+                    if item.doc 
+                        a(href="#" + item.doc._id)
+                            i.glyphicon.glyphicon-eye-open
+                            if item.doc.nickname
+                                |  #{item.doc.nickname}
+                            else
+                                |  #{item.doc._id}
+                    else
+                        | #{ item.value.message.FromUserName}
                 td= item.FromUserName
                 td= item.MsgType
                 td= item.CreateTime
