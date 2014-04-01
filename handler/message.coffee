@@ -4,6 +4,14 @@ xmlbuilder = require("xmlbuilder")
 Configuration = require '../config/config'
 MessageModel = require "../model/message"
 MessageService = require("../service/messageService")
+
+#for qrcode
+Canvas = require 'canvas'
+Image = Canvas.Image
+qrcode = require('jsqrcode')(Canvas)
+# for get image
+request = require 'request'
+image = new Image()
 #Get config singleton instance
 configInstance = Configuration.getInstance()
 #Handle Message,Return Json as Parameter to Callback method
@@ -17,8 +25,20 @@ exports.handleMsg = (xml, callback) ->
       saveMessage(json)
       buildXml json, callback
     return
-
   return
+
+#decode image that include a  qrcode
+decodeQRcode = (imgUrl,callback)->
+  request {url: imgUrl,encoding: null}, (error, response, body) ->
+    buff = new Buffer(body, 'binary');
+    image.src = buff;
+    try 
+      result = qrcode.decode(image)
+      callback null,result
+      # console.log('result of qr code: ' + result)
+    catch e
+      callback e
+      console.log('unable to read qr code')
 
 saveMessage = (json)->
   console.log "saveMessage"
@@ -74,11 +94,9 @@ readXml = (xml, callback) ->
       json.EventKey = res.xml.EventKey.text()  if json.Event is "CLICK" or json.Event is "VIEW"
     callback json
     return
-
   return
 
 buildXml = (json, callback) ->
-  
   #console.log("buildXml");
   xml = xmlbuilder.create("xml")
   xml.ele("ToUserName").dat json.FromUserName
@@ -92,7 +110,8 @@ buildXml = (json, callback) ->
   else if json.MsgType is "image"
     
     # xml.ele("Image").ele("MediaId").dat(json.MediaId);
-    xml.ele("Content").dat "It's image message"
+    # xml.ele("Content").dat "It's image message"
+
   else if json.MsgType is "voice"
     
     #xml.ele("Voice").ele("MediaId").dat(json.MediaId);
@@ -114,7 +133,18 @@ buildXml = (json, callback) ->
   #do something for link bussiness logic
   else xml.ele("Content").dat "It's link message"  if json.MsgType is "link"
   
-  #console.log(xml);
+  # console.log(xml);
+  # decode qrcode
+  if json.MsgType is "image"
+    decodeQRcode json.PicUrl,(err,result)->
+      if err
+        xml.ele("Content").dat "It's image message"
+        callback xml
+      else
+        xml.ele("Content").dat "Detected QRCode, It's content : " + result;
+        callback xml
+      return
+    return
   callback xml
   return
 
@@ -138,6 +168,7 @@ buildEvent = (json, callback) ->
   console.log "xml -> " + xml
   callback xml
   return
+
 
 menuJson = button: [
   {
