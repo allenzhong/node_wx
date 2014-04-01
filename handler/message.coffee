@@ -165,12 +165,13 @@ buildXml = (json, callback) ->
 # it's hard code for demo something
 buildNewsForQRCode = (qrresult,json,xml)->
   xml.ele("ArticleCount",2)
-  item1 = xml.ele("Articles").ele("item")
+  articles = xml.ele("Articles")
+  item1 = articles.ele("item")
   item1.ele("Title").dat("魅族 MX3 16G 3G手机")
   item1.ele("Description").dat("魅族 MX3 16G 3G手机 TD-SCDMA/GSM 前黑后白 移动版")
   item1.ele("PicUrl").dat("http://img3.wgimg.com/qqbuy/1320496115/item-00000000000000000000005D4EB52BF3.0.jpg/600?524946BD")     
   item1.ele("Url").dat("http://item.yixun.com/item-856304.html?YTAG=1.100019022&cp-ptss=928-328-856304")   
-  item2 = xml.ele("Articles").ele("item")
+  item2 = articles.ele("item")
   item2 .ele("Title").dat("moman 摩曼 蓝牙耳机M308(黑）")
   item2 .ele("Description").dat("moman 摩曼 蓝牙耳机M308(黑）")
   item2 .ele("PicUrl").dat("http://img3.wgimg.com/qqbuy/3084477299/item-000000000000000000000068B7D96373.4.jpg/600?52CD16B6")     
