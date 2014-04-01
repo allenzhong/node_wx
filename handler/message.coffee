@@ -17,6 +17,7 @@ configInstance = Configuration.getInstance()
 #Handle Message,Return Json as Parameter to Callback method
 #callback(sending xml)
 exports.handleMsg = (xml, callback) ->
+  # console.log "event ->"
   readXml xml, (json) ->
     if json.MsgType is "event"
       console.log "it's event ->" + JSON.stringify(json)
@@ -190,10 +191,13 @@ buildEvent = (json, callback) ->
   else if json.Event is "subscribe"
     xml.ele("Content").dat "希望再次关注众云测试平台"
   else if json.Event is "CLICK" or json.Event is "VIEW"
-    
     #handle menu
     menuName = handleMenu(json.EventKey)
     xml.ele("Content").dat "点击菜单 ：" + menuName
+  else 
+    str = "event:" + json.Event + " - EventKey:" + json.EventKey + (" - Ticket :" + json.Ticket if json.Ticket)
+    xml.ele("Content").dat  str
+
   console.log "xml -> " + xml
   callback xml
   return
