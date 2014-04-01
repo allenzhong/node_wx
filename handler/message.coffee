@@ -148,6 +148,11 @@ buildXml = (json, callback) ->
         xml.ele("MsgType").dat "news"
         buildNewsForQRCode(result,json,xml)
         # xml.ele("Content").dat "Detected QRCode, It's content : " + result;
+        console.log xml.end(
+          pretty: true
+          indent: "  "
+          newline: "\n"
+        )
         callback xml
       return
     return
