@@ -104,8 +104,9 @@ buildXml = (json, callback) ->
   xml.ele("CreateTime").dat json.CreateTime
   
   #xml.ele("MsgType").dat(json.MsgType);
-  xml.ele("MsgType").dat "text"
+  
   if json.MsgType is "text"
+    xml.ele("MsgType").dat "text"
     xml.ele("Content").dat "It's text message"
   else if json.MsgType is "image"
     
@@ -113,46 +114,51 @@ buildXml = (json, callback) ->
     # xml.ele("Content").dat "It's image message"
 
   else if json.MsgType is "voice"
-    
+    xml.ele("MsgType").dat "text"
     #xml.ele("Voice").ele("MediaId").dat(json.MediaId);
     unless json.Recognition is "undefined"
       xml.ele("Content").dat json.Recognition
     else
       xml.ele("Content").dat "It's voice message"
   else if json.MsgType is "video"
-    
+    xml.ele("MsgType").dat "text"
     # json.MediaId = res.xml.MediaId.text();
     # json.ThumbMediaId = res.xml.ThumbMediaId.text();
     #With Viedo,it must be get its Title,Description for sending xml
     xml.ele("Content").dat "It's video message"
   else if json.MsgType is "location"
-    
+    xml.ele("MsgType").dat "text"
     #do something for location bussiness logic
     xml.ele("Content").dat "It's location message"
   
   #do something for link bussiness logic
-  else xml.ele("Content").dat "It's link message"  if json.MsgType is "link"
+  else 
+    xml.ele("MsgType").dat "text"
+    xml.ele("Content").dat "It's link message"  if json.MsgType is "link"
   
   # console.log(xml);
   # decode qrcode
   if json.MsgType is "image"
     decodeQRcode json.PicUrl,(err,result)->
       if err
+        xml.ele("MsgType").dat "text"
         xml.ele("Content").dat "It's image message"
         callback xml
       else
-        buildNewsForQRCode(result,json,xml,callback)
+        xml.ele("MsgType").dat "news"
+        buildNewsForQRCode(result,json,xml)
         # xml.ele("Content").dat "Detected QRCode, It's content : " + result;
-
+        callback xml
       return
     return
+  xml.ele("MsgType").dat "text"
   callback xml
   return
 
 
 # if  it's from QRCode，execute below method
 # it's hard code for demo something
-buildNewsForQRCode = (qrresult,json,xml,callback)->
+buildNewsForQRCode = (qrresult,json,xml)->
   xml.ele("ArticleCount",2)
   xml.ele("Articles")
       .ele("item")
@@ -165,7 +171,6 @@ buildNewsForQRCode = (qrresult,json,xml,callback)->
         .ele("Description").dat("moman 摩曼 蓝牙耳机M308(黑）")
         .ele("PicUrl").dat("http://img3.wgimg.com/qqbuy/3084477299/item-000000000000000000000068B7D96373.4.jpg/600?52CD16B6")     
         .ele("Url").dat("http://item.yixun.com/item-1531051.html?DAP=6659508678379651659:563798819347628033:2:1531051") 
-  callback xml
   return 
 
 #build event response that message is text
