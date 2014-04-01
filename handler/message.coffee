@@ -141,13 +141,32 @@ buildXml = (json, callback) ->
         xml.ele("Content").dat "It's image message"
         callback xml
       else
-        xml.ele("Content").dat "Detected QRCode, It's content : " + result;
-        callback xml
+        buildNewsForQRCode(result,json,xml,callback)
+        # xml.ele("Content").dat "Detected QRCode, It's content : " + result;
+
       return
     return
   callback xml
   return
 
+
+# if  it's from QRCode，execute below method
+# it's hard code for demo something
+buildNewsForQRCode = (qrresult,json,xml,callback)->
+  xml.ele("ArticleCount",2)
+  xml.ele("Articles")
+      .ele("item")
+        .ele("Title").dat("魅族 MX3 16G 3G手机")
+        .ele("Description").dat("魅族 MX3 16G 3G手机 TD-SCDMA/GSM 前黑后白 移动版")
+        .ele("PicUrl").dat("http://img3.wgimg.com/qqbuy/1320496115/item-00000000000000000000005D4EB52BF3.0.jpg/600?524946BD")     
+        .ele("Url").dat("http://item.yixun.com/item-856304.html?YTAG=1.100019022&cp-ptss=928-328-856304")   
+      .ele("item")
+        .ele("Title").dat("moman 摩曼 蓝牙耳机M308(黑）")
+        .ele("Description").dat("moman 摩曼 蓝牙耳机M308(黑）")
+        .ele("PicUrl").dat("http://img3.wgimg.com/qqbuy/3084477299/item-000000000000000000000068B7D96373.4.jpg/600?52CD16B6")     
+        .ele("Url").dat("http://item.yixun.com/item-1531051.html?DAP=6659508678379651659:563798819347628033:2:1531051") 
+  callback xml
+  return 
 
 #build event response that message is text
 buildEvent = (json, callback) ->

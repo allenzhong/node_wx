@@ -9,6 +9,25 @@ class Message
         delete this["features"]
         console.log JSON.stringify this
         @resource =  "message"
+    class Article
+        constructor:(@Title,@Description,@PicUrl,@Url)->
+    
+
+    # create Inner class instance
+    createArticle:(title,description,picurl,url)->
+        article = new Article(title,description,picurl,url)
+        return article
+        # if(@Articles)
+
+    # insert article to @Articles
+    # force: if @Articles is not exists,create it 
+    insertArticle:(article,force)->
+        if(@Articles typeof Array)
+            @Articles.push(article)
+        else if(forceCreate)
+            @Articles=[]
+            @Articles.push(article)
+        return
 
     defineProperty:(type,features)->
         if(type=="text")
@@ -32,7 +51,12 @@ class Message
             @Description = features.Description      
             @Url = features.Url
             @MsgId = features.MsgId       
-    
+        else if(type=="news")
+            @ArticleCount=features.ArticleCount
+            @Articles = features.Articles
+
+
+
     parseDoc:(doc)->
         @id = doc._id
         @rev = doc._rev
