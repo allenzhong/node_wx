@@ -92,7 +92,7 @@ readXml = (xml, callback) ->
       jsonMsgId = res.xml.MsgId.text()
     else if json.MsgType is "event"
       json.Event = res.xml.Event.text()
-      json.EventKey = res.xml.EventKey.text()  if json.Event is "CLICK" or json.Event is "VIEW"
+      json.EventKey = res.xml.EventKey.text() 
     callback json
     return
   return
