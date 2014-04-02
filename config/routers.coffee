@@ -61,6 +61,10 @@ exports.routerSettings = (app)->
     app.get '/admin/message/type/:type/:id',routesAdmin.message_type
     app.get '/admin/message/index/:id(\d*)',routesAdmin.message_index
 
+    #admin user routes
+    app.get "/admin/qrcode/index/:id",routesAdmin.qrcode_index
+    app.get "/admin/qrcode/add",routesAdmin.qrcode_add
+    app.post "/admin/qrcode/save",routesAdmin.qrcode_save
 
     #Core message routes
     app.post "/", (req, res, next) ->

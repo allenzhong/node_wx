@@ -210,6 +210,18 @@ init = (dbConnection)->
                                     return emit doc.id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
+                        },
+                        qrcode:{
+                            map:(doc)->
+                                if(doc.resource=='qrcode')
+                                    return emit doc.id,doc
+                        },
+                        count_qrcode:{
+                            map:(doc)->
+                                if(doc.resource=='qrcode')
+                                    return emit doc.id,1
+                            reduce:(keys,values,rereduce)->
+                                return sum(values)                           
                         }
                     }
                 }

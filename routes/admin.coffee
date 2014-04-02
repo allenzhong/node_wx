@@ -4,6 +4,8 @@
 Configuration = require '../config/config'
 Service = require '../service/service'
 
+QRCodeService = require '../service/qrcodeService'
+QRCodeModel = require "../model/qrcode"
 ConfigModel = require '../model/configuration'
 ConfigurationService = require '../service/configurationService'
 MessageModel = require '../model/message'
@@ -14,6 +16,8 @@ FollowerModel = require '../model/follower'
 FollowerService = require '../service/followerService'
 followerHandler = require("../handler/follower")
 platformHandler = require("../handler/platform")
+qrcodeHandler = require("../handler/qrcode")
+
 configInstance = Configuration.getInstance()
 # BlogPageNum = configInstance.BlogPageNum
 # LinkPageNum = configInstance.LinkPageNum
@@ -291,3 +295,79 @@ exports.message_type = message_type = (req,res)->
         paging docs,page,'weixin/count_message_'+type,(json)->
             json['type'] = type
             res.render 'admin/message/'+type+"Msg" , json     
+
+#########################################################
+################### Admin  Message  End #######################
+######################################################### 
+
+
+
+#########################################################
+################### Admin  QRCode  ##########################
+######################################################### 
+
+exports.qrcode_index = (req,res)->
+    page = 1
+    if req.params.id
+        page = parseInt(req.params.id)
+    param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
+    #logger.info("entering admin index page")
+    dbConnection = configInstance.getDBConnection()
+    service = new QRCodeService(dbConnection)
+    docs = service.find 'weixin/qrcode',param ,(docs)->
+        #console.log "docs - >"+JSON.stringify(docs)
+        users = service.parseDocs(docs)
+        paging users,page,'weixin/count_qrcode',(json)->
+            res.render 'admin/qrcode/index' , json  
+
+
+#Show Add qrcode Page
+exports.qrcode_add = (req,res)->
+    ##console.log "Add Post"
+    res.render 'admin/qrcode/add' 
+
+#Save QRCode
+exports.qrcode_save = qrcode_save = (req,res)->
+    type = req.param("type")
+    scene_id = req.param("scene_id")
+    description = req.param("description")
+
+    platformHandler.getAccessToken (token)->
+        # Request qrcode ticket
+        if(type=="t")
+            qrcodeHandler.requestTempCode scene_id,1800,token,(body)->
+                #save pic and save object to db
+                filename = "/images/"+qrcodeHandler.savePic(body.ticket)
+                save_qrcode_and_direct(req,res,body.ticket,filename,1800)
+                return
+        else
+            qrcodeHandler.requestPermanetCode scene_id,token,(body)->
+                #save pic and save object to db
+                filename = "/images/"+qrcodeHandler.savePic(body.ticket)
+                save_qrcode_and_direct(req,res,body.ticket,filename,-1)
+                return
+        return
+    return
+
+
+save_qrcode_and_direct=(req,res,ticket,filename,expire_in=1800)->
+    console.log  "description" +  req.param("description")
+    scene_id = req.param("scene_id")
+    description = req.param("description")
+    if(req.param('id'))
+        ##console.log "update qrcode"
+        qrcode = new QRCodeModel(req.param('id'),req.param('rev'),scene_id,ticket,expire_in,filename,description)
+    else
+        ##console.log "new qrcode"
+        qrcode = new QRCodeModel(req.param('id'),req.param('rev'),scene_id,ticket,expire_in,filename,description)
+    
+    dbConnection = configInstance.getDBConnection()
+    service = new QRCodeService(dbConnection)
+    objUser = qrcode.getObject()
+    service.save objUser,(err,ress)->
+        if err
+            ##console.log "Error in  qrcode Create"  
+        else
+            res.redirect "admin/qrcode/index"
+
+
