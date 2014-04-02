@@ -19,7 +19,77 @@ block content
                     }
                 };
                 $('#paging-tool').bootstrapPaginator(options);
-            
+
+                fetchArticles = function(item_id){
+                        $.ajax({
+                              type:"GET",
+                              url:"/admin/qrcode/fetchArticles?id=" + item_id
+                        }).done(function(response){
+                            if(response.articles)
+                                var articles = response.articles;
+                                var tableNode = $("#articles_table");
+                                for(var i=0;i<articles.length;i++){
+                                  var node = articles[i];
+                                  var tr = $("<tr/>");
+                                  tr.append("<td>"+node.title+"</td>");
+                                  tr.append("<td>"+node.description+"</td>");
+                                  tr.append("<td>"+node.picurl+"</td>");
+                                  tr.append("<td>"+node.url+"</td>");
+                                  tableNode.append(tr);
+                                }
+                        });
+                };
+                cleanTable = function(){
+                    $("#articles_table tbody").children( 'tr:not(:first)' ).remove();
+                    $("#qrcode_title") .val("");
+                    $("#qrcode_description").val("");
+                    $("#qrcode_picurl").val("");
+                    $("#qrcode_url").val("");
+                }
+                $("a[rel='set_article']").on('click',function(){
+                   var item_id = $(this).attr("rel0");
+                   var scene_id = $(this).attr("rel1");
+                   $("#qrcode_id").val(item_id);
+                   $("#scene_id").val(scene_id);
+                   //bind submit article button
+                   $("input[name='addArticle']").click(function(event){
+                           var title = $("#qrcode_title") .val();
+                           var description = $("#qrcode_description").val();
+                           var picurl = $("#qrcode_picurl").val();
+                           var url = $("#qrcode_url").val();
+                           $.ajax({
+                                  type:"POST",
+                                  url:"/admin/qrcode/addArticle/"+item_id,
+                                  data:{
+                                    title:title,
+                                    description:description,
+                                    picurl:picurl,
+                                    url:url
+                                  }
+                           }).done(function(response){
+                              if(response.success){
+                                      cleanTable();
+                                      fetchArticles(item_id);
+                              }
+                              else{
+                                  alert("unsuccess");
+                              }
+                           });
+                  });
+                   //fetch articles from db
+                   //when fetch successful,callback below
+                   //and insert td element to table #articles_table
+                   //at last, popup modal dialog
+
+                   //in modal window
+                   //when delete a item, fetch all records again???
+                   //when add a item, fetch all????
+                   $("#myModal").modal();
+                   $('#myModal').on('shown.bs.modal', function (e) {
+                        //fetch aricles
+                       fetchArticles(item_id);
+                    });
+                });
             });
     ul.list-inline.pull-right
         li
@@ -32,12 +102,15 @@ block content
             |  QRCode
     table.table.table-bordered
         tr
-            th(colspan="1") Scene Id
-            th(colspan="3") Ticket            
+            th.text-center(colspan="1") 
+                | Scene Id  
+            th.text-center(colspan="4") Ticket 
+            
         - each item in docs
             tr
-                td(rowspan="2")=item.scene_id
-                td(colspan="3")= item.ticket
+                td.text-center(rowspan="2")
+                    |#{item.scene_id}
+                td(colspan="4")= item.ticket
             tr
                 td
                     strong 
@@ -47,9 +120,48 @@ block content
                     strong
                         | expire_seconds: 
                     | #{item.expire_seconds}
-                td
+                td.text-center
                     if item.img_path
-                        img.thumbnail(src="#{item.img_path}",style="width:80px;height:80px;")    
-
-                        
+                        img.thumbnail(src="#{item.img_path}",style="width:80px;height:80px;") 
+                td
+                    a(href="#",rel="set_article",rel0="#{item.id}",rel1="#{item.scene_id}")
+                        i.glyphicon.glyphicon-edit                  
     ul(id="paging-tool")
+
+    #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h4#myModalLabel.modal-title Set Article With                  
+                label#scene_id 
+            .modal-body
+
+               table#articles_table.table
+                  tr
+                      th Title
+                      th Description
+                      th PicUrl
+                      th Url
+               hr
+               form(id="formArticle", method="post", action="/admin/qrcode/addArticle",role="form")
+                   .form-group.form-inline
+                       input#qrcode_id(type="hidden",name="qrcode_id")
+                       label.sr-only Title
+                       input#qrcode_title.form-control(name="title",placeholder="Title")
+                       &nbsp; 
+                       label.sr-only   Description
+                       input#qrcode_description.form-control(name="description",placeholder="Description")
+                   .form-group.form-inline
+                       label.sr-only PicUrl
+                       input#qrcode_picurl.form-control(name="picurl",placeholder="Picture Url eg. http://a.com/1.jpg")
+                       &nbsp;                
+                       label.sr-only Url
+                       input#qrcode_url.form-control(name="url",placeholder="Url eg.http://m.51buy.com")                       
+                   .form-group
+                       input(type="button", name="addArticle",value="Add Article")
+
+
+               
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Close

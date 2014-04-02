@@ -65,6 +65,10 @@ exports.routerSettings = (app)->
     app.get "/admin/qrcode/index/:id",routesAdmin.qrcode_index
     app.get "/admin/qrcode/add",routesAdmin.qrcode_add
     app.post "/admin/qrcode/save",routesAdmin.qrcode_save
+    # admin qrcode articles
+    app.get "/admin/qrcode/fetchArticles",routesAdmin.qrcode_fetchArticles
+    app.post "/admin/qrcode/qrcode_addArticle/:id",routesAdmin.qrcode_addArticle
+    app.del "/admin/qrcode/delArticle/:id",routesAdmin.qrcode_delArticle
 
     #Core message routes
     app.post "/", (req, res, next) ->

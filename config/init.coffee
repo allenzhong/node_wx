@@ -79,7 +79,7 @@ init = (dbConnection)->
                         count_user:{
                             map:(doc)->
                                 if(doc.resource=='user')
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },
@@ -101,7 +101,7 @@ init = (dbConnection)->
                         count_config:{
                             map:(doc)->
                                 if(doc.resource=='config')
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },
@@ -113,7 +113,7 @@ init = (dbConnection)->
                         count_follower:{
                             map:(doc)->
                                 if(doc.resource=='follower')
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },              
@@ -135,7 +135,7 @@ init = (dbConnection)->
                         count_message:{
                             map:(doc)->
                                 if(doc.resource=='message')
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },  
@@ -147,7 +147,7 @@ init = (dbConnection)->
                         count_message_text:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="text")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         }, 
@@ -159,7 +159,7 @@ init = (dbConnection)->
                         count_message_image:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="image")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         }, 
@@ -171,7 +171,7 @@ init = (dbConnection)->
                         count_message_voice:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="voice")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         }, 
@@ -183,7 +183,7 @@ init = (dbConnection)->
                         count_message_video:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="video")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         }, 
@@ -195,7 +195,7 @@ init = (dbConnection)->
                         count_message_location:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="location")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         }, 
@@ -207,21 +207,31 @@ init = (dbConnection)->
                         count_message_link:{
                             map:(doc)->
                                 if(doc.resource=='message'&& doc.MsgType=="link")
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)
                         },
                         qrcode:{
                             map:(doc)->
                                 if(doc.resource=='qrcode')
-                                    return emit doc.id,doc
+                                    return emit doc._id,doc
                         },
                         count_qrcode:{
                             map:(doc)->
                                 if(doc.resource=='qrcode')
-                                    return emit doc.id,1
+                                    return emit doc._id,1
                             reduce:(keys,values,rereduce)->
                                 return sum(values)                           
+                        },
+                        qrcode_articles:{
+                            map:(doc)->
+                                if(doc.resource=="qrcode_article")
+                                    return emit doc.qrcode_id,doc                                
+                        },
+                        qrcode_by_scene_id:{
+                            map:(doc)->
+                                if(doc.resource=='qrcode')
+                                    return emit doc.scene_id,doc
                         }
                     }
                 }

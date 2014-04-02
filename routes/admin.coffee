@@ -348,8 +348,7 @@ exports.qrcode_save = qrcode_save = (req,res)->
                 return
         return
     return
-
-
+# save qrcode model and direct to index
 save_qrcode_and_direct=(req,res,ticket,filename,expire_in=1800)->
     console.log  "description" +  req.param("description")
     scene_id = req.param("scene_id")
@@ -370,4 +369,48 @@ save_qrcode_and_direct=(req,res,ticket,filename,expire_in=1800)->
         else
             res.redirect "admin/qrcode/index"
 
+exports.qrcode_fetchArticles = (req,res)->
+    qrcode_id = req.param "id"
+    dbConnection = configInstance.getDBConnection()
+    service = new Service(dbConnection)
+    query = {
+        key:qrcode_id
+    }
+    service.find "weixin/qrcode_articles",query,(docs)->
+        console.log JSON.stringify docs
+        res.json {articles:docs}
+            
+# Add Article to qrcode
+exports.qrcode_addArticle = (req,res)->
+    title = req.param "title"
+    description = req.param "description"
+    picurl = req.param "picurl"
+    url = req.param "url"
+    qrcode_id = req.param "id"
+    article = {
+        qrcode_id:qrcode_id,
+        title:title,
+        description:description,
+        picurl:picurl,
+        url:url,
+        resource:"qrcode_article"
+    }
+    console.log JSON.stringify article
+    dbConnection = configInstance.getDBConnection()
+    service = new Service(dbConnection)
+    service.save article, (err,ress)->
+        if err
+            res.json {success:false}
+        else
+            res.json {success:true}
 
+#Remove a article from qrcode
+exports.qrcode_delArticle = (req,res)->
+    id = req.param "id"
+    dbConnection = configInstance.getDBConnection()
+    service = new Service(dbConnection)
+    service.delete id,null,(err)->
+        if err
+            res.json {success:false}
+        else
+            res.json {success:true}
