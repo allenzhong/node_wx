@@ -18,6 +18,7 @@ configInstance = Configuration.getInstance()
 #callback(sending xml)
 exports.handleMsg = (xml, callback) ->
   # console.log "event ->"
+  console.log xml
   readXml xml, (json) ->
     if json.MsgType is "event"
       console.log "it's event ->" + JSON.stringify(json)
