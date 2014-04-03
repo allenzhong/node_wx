@@ -329,6 +329,7 @@ exports.qrcode_add = (req,res)->
 #Save QRCode
 exports.qrcode_save = qrcode_save = (req,res)->
     type = req.param("type")
+    console.log type
     scene_id = req.param("scene_id")
     description = req.param("description")
 
@@ -338,12 +339,14 @@ exports.qrcode_save = qrcode_save = (req,res)->
             qrcodeHandler.requestTempCode scene_id,1800,token,(body)->
                 #save pic and save object to db
                 filename = "/images/"+qrcodeHandler.savePic(body.ticket)
+                #console.log body.ticket
                 save_qrcode_and_direct(req,res,body.ticket,filename,1800)
                 return
         else
             qrcodeHandler.requestPermanetCode scene_id,token,(body)->
                 #save pic and save object to db
                 filename = "/images/"+qrcodeHandler.savePic(body.ticket)
+                # console.log "requestPermanetCode-> " + body.ticket
                 save_qrcode_and_direct(req,res,body.ticket,filename,-1)
                 return
         return

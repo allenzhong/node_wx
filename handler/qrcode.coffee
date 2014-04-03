@@ -5,19 +5,16 @@ moment = require "moment"
 fs = require 'fs'
 
 
-token="yeQEu_OrXQanGC_G56BZ7Be0WTQLmEK6xCTRwXiKsHOyAK6cKhkdf9V6hGsd42L9sgQeiPyDQcGgen1aJrKew50sXTCc58o-F6GmVVauQ6jBeEGd09JZjoQcL54TB_Sqh42TS2Bs2tsYsV2K1e-DSg"
+token="KRNWN3Kx80_mHDZwMc1WR3LXBiJvs6c2JQqTgia8q7-Izej1YaUwcy-mkyUELcwJ7CAgkqnminimgXpXtwJKKBZtrWa7rnhIFMQ5Gx4JByCUHMAnosQWUoEYzJW_vjgOdx7Q1M4BX96ty5081MnDLQ"
 exports.test = ()->
- requestTempCode 123,1800,token,(res)->
-   console.log res.ticket
-   savePic(res.ticket)
-   return
- requestPermanetCode 1234,token,(res)->
+
+ requestPermanetCode 123,token,(res)->
    console.log res.ticket
    savePic(res.ticket)
    return
  return
 
-exports.savePic = (ticket)->
+exports.savePic = savePic= (ticket)->
  imgUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" +ticket
  filename = moment().unix() + Math.floor(Math.random()*10+1) + ".jpg"
  console.log "Getting image " + filename
@@ -52,6 +49,7 @@ exports.requestPermanetCode=requestPermanetCode= (scene_id,token,callback)->
 
  url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token
  request.post {url:url,json:json},(e,r,body)->
+  console.log body
   callback body
  return
 
