@@ -230,6 +230,7 @@ buildScanEvent = (json,xml,callback)->
     # view qrcode_articles
     service.find "weixin/qrcode_articles",queryArticle,(err,docs)->
       length = docs.length
+      xml.ele("MsgType").dat "news"
       xml.ele("ArticleCount",length)
       articles = xml.ele("Articles")
       for item in docs
