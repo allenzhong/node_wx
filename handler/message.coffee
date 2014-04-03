@@ -4,7 +4,7 @@ xmlbuilder = require("xmlbuilder")
 Configuration = require '../config/config'
 MessageModel = require "../model/message"
 MessageService = require("../service/messageService")
-
+ArticleService = require '../service/articleService'
 #for qrcode
 Canvas = require 'canvas'
 Image = Canvas.Image
@@ -93,6 +93,7 @@ readXml = (xml, callback) ->
     else if json.MsgType is "event"
       json.Event = res.xml.Event.text()
       json.EventKey = res.xml.EventKey.text() 
+      json.Ticket = res.xml.Ticket.text() unless res.xml.Ticket is "undefined"
     callback json
     return
   return
@@ -185,23 +186,59 @@ buildEvent = (json, callback) ->
   xml.ele("ToUserName").dat json.FromUserName
   xml.ele("FromUserName").dat json.ToUserName
   xml.ele("CreateTime").dat json.CreateTime
-  xml.ele("MsgType").dat "text"
+
   if json.Event is "subscribe"
+    xml.ele("MsgType").dat "text"
     xml.ele("Content").dat "谢谢关注众云测试平台"
   else if json.Event is "subscribe"
+    xml.ele("MsgType").dat "text"
     xml.ele("Content").dat "希望再次关注众云测试平台"
   else if json.Event is "CLICK" or json.Event is "VIEW"
     #handle menu
     menuName = handleMenu(json.EventKey)
     xml.ele("Content").dat "点击菜单 ：" + menuName
+  else if json.Event is "SCAN" and json.Ticket
+    buildScanEvent(json,xml,callback)
+    return
   else 
+    xml.ele("MsgType").dat "text"
     str = "event:" + json.Event + " - EventKey:" + json.EventKey + (" - Ticket :" + json.Ticket if json.Ticket)
     xml.ele("Content").dat  str
 
-  console.log "xml -> " + xml
+  # console.log "xml -> " + xml
   callback xml
   return
 
+
+
+buildScanEvent = (json,xml,callback)->
+  # first fetch qrcode by scene_id
+  # view: qrcode_by_scene_id
+  queryQrcode = {
+    key:json.EventKey
+  }
+  dbConnection = configInstance.getDBConnection()
+  service = new ArticleService(dbConnection)
+  service.find "weixin/qrcode_by_scene_id",queryQrcode,(err,docs)->
+    #console.log JSON.stringify docs
+    qrcode_id = docs[0].id
+    queryArticle = {
+      key:qrcode_id
+    }
+    # second fetch articles by qrcode_id
+    # view qrcode_articles
+    service.find "weixin/qrcode_articles",queryArticle,(err,docs)->
+      length = docs.length
+      xml.ele("ArticleCount",length)
+      articles = xml.ele("Articles")
+      for item in docs
+          element = articles.ele("item")
+          element .ele("Title").dat(item.value.title)
+          element .ele("Description").dat(item.value.description)
+          element .ele("PicUrl").dat(item.value.picurl)     
+          element .ele("Url").dat(item.value.url) 
+      # console.log "xml -> " + xml
+      callback xml
 
 menuJson = button: [
   {

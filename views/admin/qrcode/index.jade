@@ -5,6 +5,7 @@ block script
 block content
     script.
             $(document).ready(function(){
+                var qrcode_id;
                $('.table tbody a.deleteUser').on('click',deleteBlog);
                var total = #{numberOfPages};
                var current = #{current};
@@ -19,6 +20,22 @@ block content
                     }
                 };
                 $('#paging-tool').bootstrapPaginator(options);
+
+                //object: <a> object for delete it's parent 
+                deleteArticle = function(object,article_id){
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/admin/qrcode/delArticle/' + article_id
+                    }).done(function(response) {
+                        if (response.success) {
+                          //success,delete line or clean , then fetch again
+                          cleanTable();
+                          fetchArticles(qrcode_id);
+                        } else {
+                          alert("unsuccess")
+                        }
+                    });
+                };
 
                 fetchArticles = function(item_id){
                         $.ajax({
@@ -35,31 +52,51 @@ block content
                                   tr.append("<td>"+node.description+"</td>");
                                   tr.append("<td>"+node.picurl+"</td>");
                                   tr.append("<td>"+node.url+"</td>");
-                                  tableNode.append(tr);
+                                  tr.append("<td><a href='#' rel='" + node._id +"' rel1='deleteArticle'><i class='glyphicon glyphicon-remove-sign'> </i></a></td>");
+                                  tableNode.append(tr);                      
                                 }
+                                if(articles.length>0){
+                                  $("a[rel1='deleteArticle']").on("click",function(event){
+                                      var article_id = $(this).attr("rel");                 
+                                      deleteArticle(this,article_id);         
+                                  });
+                              }
                         });
+
+
                 };
-                cleanTable = function(){
+                //clean table row
+                cleanTable = function(callback){
                     $("#articles_table tbody").children( 'tr:not(:first)' ).remove();
                     $("#qrcode_title") .val("");
                     $("#qrcode_description").val("");
                     $("#qrcode_picurl").val("");
                     $("#qrcode_url").val("");
+                    if( typeof(callback)=="function"){
+                        callback;
+                    }
                 }
-                $("a[rel='set_article']").on('click',function(){
-                   var item_id = $(this).attr("rel0");
-                   var scene_id = $(this).attr("rel1");
-                   $("#qrcode_id").val(item_id);
-                   $("#scene_id").val(scene_id);
-                   //bind submit article button
-                   $("input[name='addArticle']").click(function(event){
+                //when modal hide, remove all data from table
+                $('#myModal').on('hide.bs.modal', function (e) {
+                        //clean aricles
+                       cleanTable();
+                    });
+                //when modal show, fetch data and fill in table
+                $('#myModal').on('shown.bs.modal', function (e) {
+                        //fetch aricles
+                        if(qrcode_id!=""){
+                          fetchArticles(qrcode_id);
+                        }
+                });
+                //bind add button
+                $("input[name='addArticle']").click(function(event){
                            var title = $("#qrcode_title") .val();
                            var description = $("#qrcode_description").val();
                            var picurl = $("#qrcode_picurl").val();
                            var url = $("#qrcode_url").val();
                            $.ajax({
                                   type:"POST",
-                                  url:"/admin/qrcode/addArticle/"+item_id,
+                                  url:"/admin/qrcode/addArticle/"+qrcode_id,
                                   data:{
                                     title:title,
                                     description:description,
@@ -68,14 +105,21 @@ block content
                                   }
                            }).done(function(response){
                               if(response.success){
-                                      cleanTable();
-                                      fetchArticles(item_id);
+                                      cleanTable(fetchArticles(qrcode_id));
                               }
                               else{
                                   alert("unsuccess");
                               }
                            });
-                  });
+                });
+
+                $("a[rel='set_article']").on('click',function(){
+                   var item_id = $(this).attr("rel0");
+                   qrcode_id = item_id;
+                   var scene_id = $(this).attr("rel1");
+                   $("#qrcode_id").val(item_id);
+                   $("#scene_id").val(scene_id);
+                   //bind submit article button
                    //fetch articles from db
                    //when fetch successful,callback below
                    //and insert td element to table #articles_table
@@ -85,10 +129,7 @@ block content
                    //when delete a item, fetch all records again???
                    //when add a item, fetch all????
                    $("#myModal").modal();
-                   $('#myModal').on('shown.bs.modal', function (e) {
-                        //fetch aricles
-                       fetchArticles(item_id);
-                    });
+                   //fetchArticles(item_id);
                 });
             });
     ul.list-inline.pull-right
@@ -129,7 +170,7 @@ block content
     ul(id="paging-tool")
 
     #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-        .modal-dialog
+        .modal-dialog.modal-lg
           .modal-content
             .modal-header
                 button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -143,6 +184,7 @@ block content
                       th Description
                       th PicUrl
                       th Url
+                      th
                hr
                form(id="formArticle", method="post", action="/admin/qrcode/addArticle",role="form")
                    .form-group.form-inline

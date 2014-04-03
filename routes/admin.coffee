@@ -400,6 +400,7 @@ exports.qrcode_addArticle = (req,res)->
     service = new Service(dbConnection)
     service.save article, (err,ress)->
         if err
+            console.log err.message
             res.json {success:false}
         else
             res.json {success:true}
