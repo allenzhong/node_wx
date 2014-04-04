@@ -7,7 +7,7 @@ class ArticleService extends Service
 
     find:(view,params,callback,returnKey,obj)->
         @db.view view,params, (err,res)->
-            console.log "Article res:->" + res
+            # console.log "Article res:->" + res
             if(err)
                 callback err
             else
