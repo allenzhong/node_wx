@@ -215,13 +215,15 @@ buildClickMenuEvent = (json,xml,callback)->
   if json.EventKey=="V1001_MY_CODE"
       # aqquire follower's code
       followerHandler.getFollowerCode json.FromUserName,(code)->
+        xml.ele("MsgType").dat "text"
         xml.ele("Content").dat "您的暗号 ：" + code
         console.log "code ->" + xml
         callback xml
         return 
   else
-    menuName = handleMenu(json.EventKey)
-    xml.ele("Content").dat "点击菜单 ：" + menuName
+    # menuName = handleMenu(json.EventKey)
+    xml.ele("MsgType").dat "text"
+    xml.ele("Content").dat "点击菜单 ：" + json.EventKey
     callback xml
   return
   
