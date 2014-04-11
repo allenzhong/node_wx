@@ -127,6 +127,11 @@ init = (dbConnection)->
                                 if(doc.resource=='follower')
                                     return emit doc.nickname ,doc
                         },
+                        follower_by_code:{
+                            map:(doc)->
+                                if(doc.resource=='follower')
+                                    return emit doc.code,doc
+                        },
                         message:{
                             map:(doc)->
                                 if(doc.resource == 'message')

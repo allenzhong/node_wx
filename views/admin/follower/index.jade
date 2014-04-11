@@ -91,7 +91,7 @@ block content
             th Name
             th Sex
             th Address
-            th  
+            th Code
             th
         - each item in docs
             tr
@@ -110,6 +110,8 @@ block content
                     !=item.province 
                     |  
                     !=item.city
+                td
+                    !=item.code
                 td 
                     a(href="#" + item.id,rel="#{item.id}",rel1="update-follower")
                         i.glyphicon.glyphicon-search                   

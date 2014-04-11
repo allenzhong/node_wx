@@ -138,65 +138,32 @@ saveAccessToken = (json)->
 
 #create menu,POST
 exports.createMenu = (token, callback) ->
-  menuJson = button: [
-    {
-      type: "click"
-      name: "众云查单"
-      key: "V1001_TODAY_MUSIC"
-    }
-    {
-      type: "click"
-      name: "众云定位"
-      key: "V1001_TODAY_SINGER"
-    }
-    {
-      name: "菜单"
-      sub_button: [
-        {
-          type: "view"
-          name: "关于我们"
-          url: "http://www.nuubiz.com/"
-        }
-        {
-          type: "view"
-          name: "打开系统"
-          url: "http://www.nuubiz.com/"
-        }
-        {
-          type: "click"
-          name: "赞一下我们"
-          key: "V1001_GOOD"
-        }
+  menuJson = 
+      button: [{
+          type: "click",
+          name: "我的暗号",
+          key: "V1001_MY_CODE"
+          },
+          {
+          type: "click",
+          name: "众云定位",
+          key: "V1001_TODAY_SINGER"
+          }
       ]
-    }
-  ]
-  url = util.format(createMenuUrl, token)
-  console.log "menu url:-> " + url
+    
   jsonString = JSON.stringify(menuJson)
-  console.log "json length", jsonString.length
-  headers =
-    "Content-Type": "text/html;chartset=utf-8"
-    "Content-Length": jsonString.length
-    encoding: "utf-8"
-
   options =
     host: "api.weixin.qq.com"
     port: 443
     path: "/cgi-bin/menu/create?access_token=" + token
     method: "POST"
-
-  
   #headers: headers
-  req = https.request(options, (res) ->
+  req = https.request options, (res) ->
     console.log "res status :" + res.statusCode
     res.on "data", (chunk) ->
       console.log "CreateMenuRes:" + chunk
       return
-
     callback res  if typeof (callback) is "function"
-    return
-  )
   console.log "jsonString:->" + jsonString
   req.write jsonString
   req.end()
-  return

@@ -1,3 +1,4 @@
+crypto = require("crypto")
 # Follower Model
 # {
 #     "subscribe": 1, 
@@ -27,6 +28,13 @@ class Follower
         @country = doc.country
         @headimgurl = doc.headimgurl
         @subscribe_time = doc.subscribe_time
+        @bonus = doc?.bonus
+        # if doc.code
+        #     @code = doc.code
+        # else
+        #     @code = this.genCode(@nickname,6)
+        @code = doc?.code
+        @superior = doc?.superior
         @resource =  "follower"
 
     setObject:(obj)->
@@ -42,6 +50,13 @@ class Follower
         @country = obj.country
         @headimgurl = obj.headimgurl
         @subscribe_time = obj.subscribe_time
+        @subscribe_time = obj.subscribe_time
+        @bonus = obj?.bonusca
+        if obj.code
+            @code = obj.code
+        else
+            @code = this.genCode(@nickname,6)
+        @superior = obj?.superior
         @resource = 'follower'
         return null
 
@@ -62,6 +77,28 @@ class Follower
         #`#console.log(""+ @id)
         @follower['_id']=@id if @id
         @follower['_rev']=@rev if@rev
+        @follower['bonus'] = @bonus if @bonus
+        # unless @code
+        #     @code = this.genCode(@nickname,6)
+        @follower['code'] = @code if @code
+        @follower['superior'] = @superior if @superior
         return @follower
 
+
+    # generate a hex code by nick name and size 
+    genCode:(nickname,size)->
+      token=nickname
+      timestamp = new Date()
+      array = [token,timestamp]
+      sortArray = array.sort()
+      str = sortArray.join("")
+      shasum = crypto.createHash("sha1")
+      shasum.update str
+      hex = shasum.digest("hex")
+      # console.log("hex: " + hex.length);
+      code =[]
+      for index in [0..size]
+          i = Math.floor((Math.random()*40))
+          code.push hex[i]
+      return code.join("")
 module.exports = Follower

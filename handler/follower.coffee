@@ -95,9 +95,11 @@ exports.saveFollowerFullInfo = (json)->
         follower = new FollowerModel()
         console.log "parseDoc before"
         follower.parseDoc(doc)
+        unless follower.code
+          follower.code = follower.genCode(follower.nickname,6)
         console.log "parseDoc"
         follower.setObject(json)
-        # console.log follower.getObject()
+        console.log follower.getObject()
         follower.id = doc.id
         follower.rev = doc.rev
         obj = follower.getObject()
@@ -108,6 +110,8 @@ exports.saveFollowerFullInfo = (json)->
 # save follower
 exports.saveFollower = (follower)->
   db = configInstance.getDBConnection()
+  unless follower.code
+    follower.code = follower.genCode(follower.nickname,6)
   obj = follower.getObject()
   service = new FollowerService(db)
   service.save obj,(err)->
@@ -123,3 +127,29 @@ exports.pasreFollowersResponseJson = (json)->
       result.push(follower.getObject())
     console.log "parse -> " + JSON.stringify result
     return {followers:result}
+
+# generate a hex code by nick name and size 
+exports.genCode = (nickname,size)->
+  token=nickname
+  timestamp = new Date()
+  array = [token,timestamp]
+  sortArray = array.sort()
+  str = sortArray.join("")
+  shasum = crypto.createHash("sha1")
+  shasum.update str
+  hex = shasum.digest("hex")
+  # console.log("hex: " + hex.length);
+  code =[]
+  for index in [0..size]
+      i = Math.floor((Math.random()*40))
+      code.push hex[i]
+  return code.join("")
+
+# get folllower's code from db by its id
+exports.getFollowerCode = (follower_id,callback)->
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  service.get follower_id,(err,doc)->
+    console.log "follower->" + doc
+    if(doc?.resource =='follower')
+      callback doc.code

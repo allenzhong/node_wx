@@ -29,19 +29,16 @@ exports.create_menu = (req, res) ->
       resJson =
         msg: ress.responseText
         token: token
-
       res.send resJson
       return
-
     return
-
   return
 
 exports.doMessage = (req, res) ->
-  
   #console.log(req.rawBody);
   #res.send(req.rawBody);
   message.handleMsg req.rawBody, (xml) ->
+    console.log "xml ->" + xml
     res.header "Content-Type", "text/xml"
     res.send xml.end(
       pretty: true

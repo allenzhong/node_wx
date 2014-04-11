@@ -5,6 +5,7 @@ Configuration = require '../config/config'
 MessageModel = require "../model/message"
 MessageService = require("../service/messageService")
 ArticleService = require '../service/articleService'
+followerHandler = require './follower'
 #for qrcode
 Canvas = require 'canvas'
 Image = Canvas.Image
@@ -196,8 +197,9 @@ buildEvent = (json, callback) ->
     xml.ele("Content").dat "希望再次关注众云测试平台"
   else if json.Event is "CLICK" or json.Event is "VIEW"
     #handle menu
-    menuName = handleMenu(json.EventKey)
-    xml.ele("Content").dat "点击菜单 ：" + menuName
+    buildClickMenuEvent json,xml,callback
+    # menuName = handleMenu(json.EventKey)
+    # xml.ele("Content").dat "点击菜单 ：" + menuName
   else if json.Event is "SCAN" and json.Ticket
     buildScanEvent(json,xml,callback)
     return
@@ -205,11 +207,24 @@ buildEvent = (json, callback) ->
     xml.ele("MsgType").dat "text"
     str = "event:" + json.Event + " - EventKey:" + json.EventKey + (" - Ticket :" + json.Ticket if json.Ticket)
     xml.ele("Content").dat  str
-
   # console.log "xml -> " + xml
-  callback xml
+  # callback xml
   return
 
+buildClickMenuEvent = (json,xml,callback)->
+  if json.EventKey=="V1001_MY_CODE"
+      # aqquire follower's code
+      followerHandler.getFollowerCode json.FromUserName,(code)->
+        xml.ele("Content").dat "您的暗号 ：" + code
+        console.log "code ->" + xml
+        callback xml
+        return 
+  else
+    menuName = handleMenu(json.EventKey)
+    xml.ele("Content").dat "点击菜单 ：" + menuName
+    callback xml
+  return
+  
 
 
 buildScanEvent = (json,xml,callback)->
