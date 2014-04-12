@@ -132,6 +132,11 @@ init = (dbConnection)->
                                 if(doc.resource=='follower')
                                     return emit doc.code,doc
                         },
+                        follower_by_superior:{
+                            map:(doc)->
+                                if(doc.resource=='follower')
+                                    return emit doc.superior,doc
+                        },
                         message:{
                             map:(doc)->
                                 if(doc.resource == 'message')

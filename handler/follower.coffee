@@ -153,3 +153,31 @@ exports.getFollowerCode = (follower_id,callback)->
     console.log "follower->" + doc
     if(doc?.resource =='follower')
       callback doc.code
+
+# if code exist, callback(follower_id)
+# else callback(null)
+exports.isCodeExists = (code,callback)->
+  param = {
+    key:code
+  }
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  service.find "weixin/follower_by_code" ,param, (doc)->
+    console.log "follower_by_code   " + JSON.stringify(doc)
+    if doc && doc.length>0
+      callback doc[0]._id
+    else
+      callback null
+
+exports.updateSuperior= (follower_id,superior_id)->
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  service.get follower_id,(err,doc)->
+    if doc
+      follower = new FollowerModel()
+      follower.parseDoc(doc)
+      follower.superior = superior_id
+      obj = follower.getObject()
+      service.save obj,(err)->
+
+

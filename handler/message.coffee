@@ -110,10 +110,30 @@ buildXml = (json, callback) ->
   #xml.ele("MsgType").dat(json.MsgType);
   
   if json.MsgType is "text"
-    xml.ele("MsgType").dat "text"
-    xml.ele("Content").dat "It's text message"
+    isPreEvent json.ToUserName,(reply)->
+      if reply
+        console.log "reply"
+        xml.ele("MsgType").dat "text"
+
+        followerHandler.isCodeExists  json.Content,(_id)->
+          if _id
+            if _id!=json.ToUserName
+                result = "暗号输入成功，获得积分50分"
+                followerHandler.updateSuperior(json.ToUserName,_id)
+            else
+                result = "对不起，不能输入自己的暗号哦～"   
+            xml.ele("Content").dat result
+            callback xml
+          else
+              xml.ele("Content").dat "暗号不存在，请重新输入"
+              callback xml
+      else
+        console.log "text"
+        xml.ele("MsgType").dat "text"
+        xml.ele("Content").dat "It's text message"
+        callback xml
+    return 
   else if json.MsgType is "image"
-    
     # xml.ele("Image").ele("MediaId").dat(json.MediaId);
     # xml.ele("Content").dat "It's image message"
 
@@ -219,7 +239,14 @@ buildClickMenuEvent = (json,xml,callback)->
         xml.ele("Content").dat "您的暗号 ：" + code
         console.log "code ->" + xml
         callback xml
-        return 
+        return
+  else if json.EventKey == "V1002_INPUT_CODE"
+    # save pre event for this user
+    console.log "V1002_INPUT_CODE"
+    savePreEvent("V1002_INPUT_CODE|"+json.FromUserName,new Date())
+    xml.ele("MsgType").dat "text"
+    xml.ele("Content").dat " 请输入暗号 "
+    callback xml
   else
     # menuName = handleMenu(json.EventKey)
     xml.ele("MsgType").dat "text"
@@ -228,6 +255,31 @@ buildClickMenuEvent = (json,xml,callback)->
   return
   
 
+# find pre-command from redis,if get it ,pass value to callback
+isPreEvent = (user,callback)->
+  console.log "isPreEvent"
+  key = "V1002_INPUT_CODE|"+user
+  if(key.indexOf("V1002_INPUT_CODE")>=0)
+    console.log "isPreEvent " + key;
+    getPreCommand(key,callback);
+  else
+    callback null
+  return
+
+# save pre command when click menu
+savePreEvent = (key,message)->
+  client = configInstance.getRedisClient()
+  client.set(key,message)
+  client.expire(key,60*3)
+
+# get pre command when send code after click menu in 3 minutes
+getPreCommand = (key,callback)->
+  console.log "getPreCommand"
+  client = configInstance.getRedisClient()
+  client.get key,(err,reply)->
+    # if it cannot be accquired,return null (means reply = null)
+    console.log "client get " +reply
+    callback reply
 
 buildScanEvent = (json,xml,callback)->
   # first fetch qrcode by scene_id

@@ -1,5 +1,5 @@
 cradle = require 'cradle'
-
+redis = require 'redis'
 #Configurations 
 class Configuration
     instance = null
@@ -16,7 +16,7 @@ class Configuration
 
             #PageNum
             @AdminPageNum = 20
-
+            @redisClient = redis.createClient()
         getDBConnection:()->
             host = @CouchDB_URL
             port = @CouchDB_Port
@@ -25,6 +25,9 @@ class Configuration
                                 raw:false}
             db = connection.database @CouchDB_Name
 
+        getRedisClient:()->
+            @redisClient
+            
     @getInstance:()->
         instance ?= new Config()
         

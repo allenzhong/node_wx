@@ -146,8 +146,8 @@ exports.createMenu = (token, callback) ->
           },
           {
           type: "click",
-          name: "众云定位",
-          key: "V1001_TODAY_SINGER"
+          name: "输入暗号",
+          key: "V1002_INPUT_CODE"
           }
       ]
     

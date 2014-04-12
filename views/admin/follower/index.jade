@@ -53,6 +53,11 @@ block script
                       $("#myModal #send_name").html(sendname);
                       $("input#input_open_id").val(sendid);
                 });//-- send id click
+                $("a[rel='superior']").on('click',function(){
+                      var sendid = $(this).attr("rel1");
+                      if(sendid!="undefined")
+                        window.location="/admin/follower/superior?id=" +sendid;
+                });//-- send id click
               //modal msg send button
                $("#btn_send_msg").on('click',function(){
                   var msg = $("#txt_send_msg").val();
@@ -93,6 +98,8 @@ block content
             th Address
             th Code
             th
+            th
+            th
         - each item in docs
             tr
                 td 
@@ -105,7 +112,6 @@ block content
                         | M
                     else if  item.sex == 0
                         | F
-
                 td 
                     !=item.province 
                     |  
@@ -118,7 +124,10 @@ block content
                 td
                     a(href="#",rel="sendid", rel1= "#{item.openid}")
                         i.glyphicon.glyphicon-envelope   
-
+                td
+                    if item.superior
+                      a(href="#",rel="superior", rel1= "#{item.superior}")
+                          i.glyphicon.glyphicon-random   
     ul(id="paging-tool")
 
     #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

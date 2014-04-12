@@ -1,0 +1,35 @@
+extends ../layout
+
+block content
+    
+    ul.list-inline.pull-right
+        li
+            a(id="fresh-followers",href = "#") 
+                i.glyphicon.glyphicon-refresh
+                |  Refresh Followers
+    a(href="#")
+        strong
+            i.glyphicon.glyphicon-th-list
+            | Followers
+    table.table.table-striped
+        tr
+            th Name
+            th Sex
+            th Address
+            th Code
+            th
+            th
+        - each item in docs
+            tr
+                td(id="name-#{item.openid}")!= item.nickname
+                td
+                    if item.sex && item.sex == 1
+                        | M
+                    else if  item.sex == 0
+                        | F
+                td 
+                    !=item.province 
+                    |  
+                    !=item.city
+                td
+                    !=item.code          

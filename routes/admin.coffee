@@ -132,7 +132,17 @@ exports.follower_sendMsg = (req, res) ->
   platform.getAccessToken (access_token) ->
     user.sendmsg access_token, open_id, "text", msg, (response) ->
       # #console.log "statusCode ->" +response.statusCode
-      res.send success: true  if response.statusCode == 200              
+      res.send success: true  if response.statusCode == 200  
+
+exports.follower_superior = (req,res)->
+    id = req.param("id")
+    dbConnection = configInstance.getDBConnection()
+    service = new FollowerService(dbConnection)
+    console.log  "id->" + id
+    param = { key:id }
+    service.find "weixin/follower_by_superior",param,(docs)->
+        console.log docs
+        res.render 'admin/follower/superior',{docs:docs}
 
 #########################################################
 ################### Admin  User   #############################
