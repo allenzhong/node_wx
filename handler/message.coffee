@@ -110,16 +110,16 @@ buildXml = (json, callback) ->
   #xml.ele("MsgType").dat(json.MsgType);
   
   if json.MsgType is "text"
-    isPreEvent json.ToUserName,(reply)->
+    isPreEvent json.FromUserName,(reply)->
       if reply
         console.log "reply"
         xml.ele("MsgType").dat "text"
 
         followerHandler.isCodeExists  json.Content,(_id)->
           if _id
-            if _id!=json.ToUserName
+            if _id!=json.FromUserName
                 result = "暗号输入成功，获得积分50分"
-                followerHandler.updateSuperior(json.ToUserName,_id)
+                followerHandler.updateSuperior(json.FromUserName,_id)
             else
                 result = "对不起，不能输入自己的暗号哦～"   
             xml.ele("Content").dat result
