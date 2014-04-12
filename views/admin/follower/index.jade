@@ -125,9 +125,8 @@ block content
                     a(href="#",rel="sendid", rel1= "#{item.openid}")
                         i.glyphicon.glyphicon-envelope   
                 td
-                    if item.superior
-                      a(href="#",rel="superior", rel1= "#{item.superior}")
-                          i.glyphicon.glyphicon-random   
+                    a(href="#",rel="superior", rel1= "#{item.openid}")
+                        i.glyphicon.glyphicon-random   
     ul(id="paging-tool")
 
     #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
