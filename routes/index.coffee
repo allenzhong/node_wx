@@ -46,7 +46,6 @@ exports.doMessage = (req, res) ->
       newline: "\n"
     )
     return
-
   return
 
 exports.updateToken = (req,res)->

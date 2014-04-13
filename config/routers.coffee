@@ -44,6 +44,8 @@ exports.routerSettings = (app)->
     app.get "/admin/follower/update/:id",routesAdmin.follower_update
     app.get "/admin/follower/sendMsg/:id", routesAdmin.follower_sendMsg
     app.get "/admin/follower/superior/:id",routesAdmin.follower_superior
+    app.get "/admin/follower/org",routesAdmin.follower_org
+    app.get "/admin/follower/orgmap",routesAdmin.follower_orgmap
 
     #admin user routes
     app.get "/admin/user/index/:id",routesAdmin.user_index

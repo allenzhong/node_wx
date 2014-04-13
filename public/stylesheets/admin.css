@@ -175,3 +175,34 @@ footer {
     background-color:transparent;
     color:transparent;
 }
+
+#center-container {
+    height:600px;
+    position:absolute;
+    top:0;
+}
+#center-container {
+    width:600px;
+    left:200px;
+    background-color:#1a1a1a;
+    color:#ccc;
+}
+
+.text {
+    margin: 7px;
+}
+#infovis {
+    position:relative;
+    width:600px;
+    height:600px;
+    margin:auto;
+    overflow:hidden;
+}
+#inner-details {
+    font-size:0.8em;
+    list-style:none;
+    margin:7px;
+}
+#infovis-canvaswidget {
+  margin:25px 0 0 25px;
+}

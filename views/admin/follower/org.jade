@@ -1,0 +1,18 @@
+extends ../layout
+block script
+    script.
+      var openid = "#{openid}"
+    script(type='text/javascript', src="/javascripts/jit-yc.js")
+    script(type='text/javascript', src="/javascripts/org.js")    
+    script.
+        $(document).ready(function(){ 
+               init();
+        });
+block content
+    #center-container
+       #infovis
+
+    #right-container
+
+    #inner-details
+    #log

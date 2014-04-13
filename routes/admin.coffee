@@ -142,7 +142,37 @@ exports.follower_superior = (req,res)->
     param = { key:id }
     service.find "weixin/follower_by_superior",param,(docs)->
         console.log docs
-        res.render 'admin/follower/superior',{docs:docs}
+        res.render 'admin/follower/org',{openid:id,docs:docs}
+
+exports.follower_orgmap = (req,res)->
+    id = req.param("id")
+    dbConnection = configInstance.getDBConnection()
+    service = new FollowerService(dbConnection)
+    console.log  "id->" + id
+    param = { key:id }
+    service.get id,(err,root)->
+        console.log root
+        service.find "weixin/follower_by_superior",param,(docs)->
+            console.log docs
+            json =     
+                id: root._id,
+                name: "<div class='orgchartnode'>"+root.nickname+"</div>",
+                data: {},
+                children:[]
+            for item in docs
+                child = 
+                    id: item._id,
+                    name: "<div class='orgchartnode'>"+item.nickname+"</div>",
+                    data: {},
+                    children:[]
+                json.children.push(child)
+            res.send json
+
+
+
+exports.follower_org = (req,res)->
+    res.render 'admin/follower/org'
+
 
 #########################################################
 ################### Admin  User   #############################
