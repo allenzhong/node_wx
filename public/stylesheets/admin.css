@@ -184,7 +184,7 @@ footer {
 #center-container {
     width:600px;
     left:200px;
-    background-color:#1a1a1a;
+    background-color:#DDDDDD;
     color:#ccc;
 }
 
@@ -205,4 +205,8 @@ footer {
 }
 #infovis-canvaswidget {
   margin:25px 0 0 25px;
+}
+
+.orgchartnode{
+  margin-left: 10px;
 }

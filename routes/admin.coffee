@@ -157,13 +157,17 @@ exports.follower_orgmap = (req,res)->
             json =     
                 id: root._id,
                 name: "<div class='orgchartnode'>"+root.nickname+"</div>",
-                data: {},
+                data: {
+                    headimgurl:root.headimgurl
+                },
                 children:[]
             for item in docs
                 child = 
                     id: item._id,
                     name: "<div class='orgchartnode'>"+item.nickname+"</div>",
-                    data: {},
+                    data: {
+                        headimgurl:item.headimgurl
+                    },
                     children:[]
                 json.children.push(child)
             res.send json

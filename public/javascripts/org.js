@@ -42,16 +42,16 @@ function init() {
     var st = new $jit.ST({
         'injectInto': 'infovis',
         //set duration for the animation
-        duration: 800,
+        duration: 500,
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         levelDistance: 50,
         levelsToShow: 1,
         Node: {
-            height: 45,
-            width: 120,
+            height: 46,
+            width: 90,
             type: 'nodeline',
-            color: '#23A4FF',
+            color: '#2A6DB6',
             lineWidth: 2,
             align: "center",
             overridable: false
@@ -106,35 +106,37 @@ function init() {
         },
 
         onBeforeCompute: function(node) {
-            Log.write("<div style=\"text-align:center\">Loading ...</div>");
+            //Log.write("<div style=\"text-align:center\">Loading ...</div>");
             $("#orgchartori").fadeOut();
         },
 
         onAfterCompute: function() {
-            Log.write("");
+            //Log.write("");
             $("#orgchartori").fadeIn();
         },
 
         onCreateLabel: function(label, node) {
             label.id = node.id;
-            label.innerHTML = node.name;
+
+            label.innerHTML = "<table><tr><td><img src='" + node.data.headimgurl + "'' style='width:30px;height:30px;'/></td><td>  " +
+                node.name; + "</td></tr></table>"
             label.onclick = function() {
                 st.onClick(node.id);
             };
             //set label styles
 
             var style = label.style;
-            style.width = 120 + 'px';
+            style.width = 90 + 'px';
             style.height = 40 + 'px';
             style.cursor = 'pointer';
             style.color = '#fff';
-            style.border = '1px solid #888';
-            style.backgroundColor = '#333';
+            style.border = '3px solid #888';
+            style.backgroundColor = '#2A7AC6';
             style.fontSize = '10px';
             style.fontweight = 'bold';
             style.textAlign = 'center';
             style.textDecoration = 'none';
-            style.paddingTop = '3px';
+            style.paddingTop = '1px';
 
         },
 
