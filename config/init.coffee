@@ -200,7 +200,7 @@ init = (dbConnection)->
                         message_location:{
                             map:(doc)->
                                 if(doc.resource == 'message' && doc.MsgType=="location")
-                                    rreturn emit(doc._id, {_id:doc.FromUserName,message:doc})
+                                    return emit(doc._id, {_id:doc.FromUserName,message:doc})
                         },                       
                         count_message_location:{
                             map:(doc)->
