@@ -97,7 +97,7 @@ readXml = (xml, callback) ->
     else if json.MsgType is "event"
       json.Event = res.xml.Event.text()
       if res.xml.EventKey
-        json.EventKey = res.xml.EventKey.text() 
+        json.EventKey = res.xml.EventKey?.text() 
       else
         json.EventKey = ""
       json.Ticket = res.xml.Ticket.text() if res.xml.Ticket
