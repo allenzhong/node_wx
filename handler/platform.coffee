@@ -148,6 +148,11 @@ exports.createMenu = (token, callback) ->
           type: "click",
           name: "输入暗号",
           key: "V1002_INPUT_CODE"
+          },
+          {
+          type: "click",
+          name: "获得二维码",
+          key: "V1003_GEN_QR"
           }
       ]
     

@@ -5,7 +5,9 @@ Configuration = require '../config/config'
 MessageModel = require "../model/message"
 MessageService = require("../service/messageService")
 ArticleService = require '../service/articleService'
+platformHandler = require './platform'
 followerHandler = require './follower'
+qrcodeHandler = require './qrcode'
 #for qrcode
 Canvas = require 'canvas'
 Image = Canvas.Image
@@ -212,19 +214,25 @@ buildEvent = (json, callback) ->
   xml.ele("FromUserName").dat json.ToUserName
   xml.ele("CreateTime").dat json.CreateTime
 
-  if json.Event is "subscribe"
-    xml.ele("MsgType").dat "text"
-    xml.ele("Content").dat "谢谢关注众云测试平台"
+  if json.Event is "subscribe" and json.EventKey
+    console.log "sub"
+    buildNewsForSubscribe json,xml,callback
   else if json.Event is "subscribe"
     xml.ele("MsgType").dat "text"
     xml.ele("Content").dat "希望再次关注众云测试平台"
+    callback xml
   else if json.Event is "CLICK" or json.Event is "VIEW"
     #handle menu
     buildClickMenuEvent json,xml,callback
     # menuName = handleMenu(json.EventKey)
     # xml.ele("Content").dat "点击菜单 ：" + menuName
   else if json.Event is "SCAN" and json.Ticket
-    buildScanEvent(json,xml,callback)
+    client = configInstance.getRedisClient()
+    client.get "scene"+json.EventKey,(err,reply)->
+      if(reply)
+        buildNewsForScanQR(json,xml,callback)
+      else
+        buildScanEvent(json,xml,callback)
     return
   else 
     xml.ele("MsgType").dat "text"
@@ -250,6 +258,10 @@ buildClickMenuEvent = (json,xml,callback)->
     xml.ele("MsgType").dat "text"
     xml.ele("Content").dat " 请输入暗号 "
     callback xml
+  else if json.EventKey == "V1003_GEN_QR"
+    xml.ele("MsgType").dat "news"
+    buildNewsForGetQR(json,xml,callback)
+    return
   else
     # menuName = handleMenu(json.EventKey)
     xml.ele("MsgType").dat "text"
@@ -257,7 +269,69 @@ buildClickMenuEvent = (json,xml,callback)->
     callback xml
   return
   
+# get qrcode news message for another user scanning
+buildNewsForGetQR = (json,xml,callback)->
+  openid = json.FromUserName
+  platformHandler.getAccessToken (token)->
+    qrcodeHandler.requestQRCodeForUser openid,token,(ticket,picName)->
+      # begin build news message
+      url = "http://weixin.adiantum.info/images/"+picName
+      xml.ele("ArticleCount",1)
+      articles = xml.ele("Articles")
+      item1 = articles.ele("item")
+      item1.ele("Title").dat("您的二维码")
+      item1.ele("Description").dat("推荐人二维码, 点击打开")
+      item1.ele("PicUrl").dat(url)     
+      item1.ele("Url").dat(url)   
+      callback xml
 
+
+
+# when subscribe, find whethe scene_id is exsits
+# If exists, build a news message,and send to user
+buildNewsForSubscribe = (json,xml,callback)->
+  console.log "buildNewsForSubscribe"
+  console.log json
+  index = json.EventKey.indexOf("qrscene")
+  console.log "qrscene"
+  client = configInstance.getRedisClient()
+  if(json.EventKey and index >-1) 
+    scene_id = json.EventKey.substring(8)
+    key = "scene"+scene_id
+    console.log key
+    client.get key,(err,reply)->
+      console.log reply
+      if(reply)
+        result = "扫描推荐人二维码成功，获得积分50分"
+        followerHandler.updateSuperior(json.FromUserName,reply)
+        xml.ele("MsgType").dat "text"
+        xml.ele("Content").dat result
+        callback xml
+      else
+        xml.ele("MsgType").dat "text"
+        xml.ele("Content").dat "二维码已经失效，请推荐人再次生成二维码，谢谢"
+        callback xml
+
+# when already subscribed
+buildNewsForScanQR = (json,xml,callback)->
+  client = configInstance.getRedisClient()
+  if(json.EventKey and json.Ticket) 
+    scene_id = json.EventKey
+    key = "scene"+scene_id
+    console.log key
+    client.get key,(err,reply)->
+      console.log reply
+      if(reply)
+        result = "扫描推荐人二维码成功，获得积分50分"
+        followerHandler.updateSuperior(json.FromUserName,reply)
+        xml.ele("MsgType").dat "text"
+        xml.ele("Content").dat result
+        callback xml
+      else
+        xml.ele("MsgType").dat "text"
+        xml.ele("Content").dat "二维码已经失效，请推荐人再次生成二维码，谢谢"
+        callback xml
+   
 # find pre-command from redis,if get it ,pass value to callback
 isPreEvent = (user,callback)->
   console.log "isPreEvent"
@@ -313,6 +387,8 @@ buildScanEvent = (json,xml,callback)->
           element .ele("Url").dat(item.value.url) 
       # console.log "xml -> " + xml
       callback xml
+
+buildQRCodeScanEvent = ()->
 
 menuJson = button: [
   {
