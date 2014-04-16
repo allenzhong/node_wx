@@ -217,7 +217,7 @@ buildEvent = (json, callback) ->
   if json.Event is "subscribe" and json.EventKey
     console.log "sub"
     buildNewsForSubscribe json,xml,callback
-  else if json.Event is "subscribe"
+  else if json.Event is "unsubscribe"
     xml.ele("MsgType").dat "text"
     xml.ele("Content").dat "希望再次关注众云测试平台"
     callback xml
