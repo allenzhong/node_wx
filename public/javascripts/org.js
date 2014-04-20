@@ -46,6 +46,10 @@ function init() {
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         levelDistance: 50,
+        Navigation: {
+            enable: true,
+            panning: true
+        },
         levelsToShow: 1,
         Node: {
             height: 46,
@@ -134,7 +138,7 @@ function init() {
             style.backgroundColor = '#2A7AC6';
             style.fontSize = '10px';
             style.fontweight = 'bold';
-            style.textAlign = 'center';
+            style.textAlign = 'top';
             style.textDecoration = 'none';
             style.paddingTop = '1px';
 
@@ -176,6 +180,11 @@ function init() {
             });
             html += "</ul > ";
             $jit.id('inner-details').innerHTML = html;
+            st.switchPosition("top", "animate", {
+                onComplete: function() {
+                    //alert('completed!');
+                }
+            });
         }
     });
 
@@ -187,6 +196,8 @@ function init() {
         st.compute();
         st.onClick(st.root);
     });
+
+
     // //load json data
     // var json = " {
     // id: \"terry li\", name:\"<div class='orgchartnode'>Terry Li</div>(General Manager)\", data:{}, children:[{id:\"Jack lu\", name:\"<div class='orgchartnode'>Jack Lu</div>(QA Manager)\", data:{},children:[]},{id:\"Michelle lu\", name:\"<div class='orgchartnode'>Michelle Lu</div>(Dev Manager)\", data:{},children:[]}]}";
