@@ -119,7 +119,6 @@ buildXml = (json, callback) ->
       if reply
         console.log "reply"
         xml.ele("MsgType").dat "text"
-
         followerHandler.isCodeExists  json.Content,(_id)->
           if _id
             if _id!=json.FromUserName
