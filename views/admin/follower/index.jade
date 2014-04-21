@@ -14,7 +14,7 @@ block script
                     totalPages: total,
                     numberOfPages:numberOfPages,
                     pageUrl: function(type, page, current){
-                        return "/admin/follower/index/"+page;
+                        return "/admin/follower/index?page="+page;
                     }
                 };
                 $('#paging-tool').bootstrapPaginator(options);

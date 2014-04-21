@@ -61,8 +61,8 @@ exports.routerSettings = (app)->
     app.post "/admin/config/save",routesAdmin.config_save
 
     #admin message routes
-    app.get '/admin/message/type/:type/:id',routesAdmin.message_type
-    app.get '/admin/message/index/:id(\d*)',routesAdmin.message_index
+    app.get '/admin/message/type/:type/',routesAdmin.message_type
+    app.get '/admin/message/index/',routesAdmin.message_index
 
     #admin user routes
     app.get "/admin/qrcode/index/:id",routesAdmin.qrcode_index

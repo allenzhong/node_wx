@@ -16,7 +16,7 @@ block script
                         totalPages: total,
                         numberOfPages:numberOfPages,
                         pageUrl: function(type, page, current){
-                            return "/admin/message/type/" + page_type +"/" + page;
+                            return "/admin/message/type/" + page_type +"/?page=" + page;                        
                         }
                     };
                     $('#paging-tool').bootstrapPaginator(options);
