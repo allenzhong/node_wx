@@ -122,7 +122,7 @@ exports.saveFollowerFullInfo = (json,callback)->
         obj = follower.getObject()
         service.save obj,(err)->
           if (typeof callback)=="function"
-            callback()
+            callback(follower)
           return
       return
     return
