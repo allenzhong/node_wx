@@ -35,7 +35,7 @@ exports.requestTempCode =requestTempCode= (scene_id, expire_seconds = 1800, toke
      scene: 
       scene_id: scene_id
  url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token
- request.post {url:url,json:json},(err,body)->
+ request.post {url:url,json:json},(e,r,body)->
   console.log "temp ticket"+body
   callback body
  return
