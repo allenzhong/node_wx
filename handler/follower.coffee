@@ -121,9 +121,11 @@ exports.saveFollowerFullInfo = (json,callback)->
         follower.rev = doc.rev
         obj = follower.getObject()
         service.save obj,(err)->
-          if (typeof callback)=="function"
+
+        if (typeof callback)=="function"
+            # console.log "function ->" + follower.nickname
             callback(follower)
-          return
+        return
       return
     return
 
