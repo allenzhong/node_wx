@@ -56,6 +56,7 @@ saveMessage = (json)->
 #Handle xml 
 #callback(json)
 readXml = (xml, callback) ->
+  console.log "read xml->" + xml
   xmlreader.read xml, (err, res) ->
     
     #console.log("xmlreader.read");
@@ -119,6 +120,7 @@ buildXml = (json, callback) ->
       if reply
         console.log "reply"
         xml.ele("MsgType").dat "text"
+
         followerHandler.isCodeExists  json.Content,(_id)->
           if _id
             if _id!=json.FromUserName
