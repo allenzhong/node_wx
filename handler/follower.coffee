@@ -37,6 +37,17 @@ exports.sendmsg = (access_token,open_id,type='text',content,callback)->
   console.log "send msg :" + access_token
   modelutil.postJson(host,path,access_token,json,callback);
 
+exports.getAFollowerFromDB = (follower_id,callback)->
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  service.get follower_id,(err,doc)->
+    if doc
+      follower = new FollowerModel()
+      follower.parseDoc(doc)
+      callback follower
+    else
+      callback null
+
 exports.getFollowersFromDB = (callback)->
     db = configInstance.getDBConnection()
     service = new FollowerService(db)
@@ -51,7 +62,7 @@ exports.countFollowers = (callback)->
       callback sum
 
 # If exists return else save id
-exports.saveFollowerIDWhenNotExistsInDB =isFollowerIDExistsInDB= (openid,callback)->
+exports.saveFollowerIDWhenNotExistsInDB = isFollowerIDExistsInDB= (openid,callback)->
     db = configInstance.getDBConnection()
     service = new FollowerService(db)
     service.get  openid, (err,doc)->

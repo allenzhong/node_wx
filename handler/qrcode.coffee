@@ -82,10 +82,10 @@ exports.requestQRCodeForUser  = (openid,token,callback)->
           picName = savePic(ticket.ticket)
           value = scene_id+":"+ticket.ticket+":"+picName
           client.set(key,value)
-          client.expire(key,600*3)
+          client.expire(key,60*5)
           # save another key-value: scene_id->openid to find who is owner of qrcode
           client.set("scene"+scene_id,openid)
-          client.expire(scene_id,600*3)
+          client.expire(scene_id,60*5)
 
         callback ticket,picName
         return

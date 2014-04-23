@@ -282,7 +282,7 @@ buildNewsForGetQR = (json,xml,callback)->
       articles = xml.ele("Articles")
       item1 = articles.ele("item")
       item1.ele("Title").dat("您的二维码")
-      item1.ele("Description").dat("推荐人二维码, 点击打开")
+      item1.ele("Description").dat("推荐人二维码, 点击打开,有效期5分钟。如过期失效，请重新获取")
       item1.ele("PicUrl").dat(url)     
       item1.ele("Url").dat(url)   
       callback xml
@@ -312,10 +312,11 @@ buildNewsForSubscribe = (json,xml,callback)->
               console.log result_json
               followerHandler.saveFollowerFullInfo result_json,()->
                   followerHandler.updateSuperior(json.FromUserName,reply)
-              result = "扫描推荐人二维码成功，获得积分50分"
-              xml.ele("MsgType").dat "text"
-              xml.ele("Content").dat result
-              callback xml
+                  followerHandler.getAFollowerFromDB reply,(follower)->
+                    result = "扫描推荐人 " + follower.nickname + " 的二维码成功，获得积分50分"
+                    xml.ele("MsgType").dat "text"
+                    xml.ele("Content").dat result
+                    callback xml
               return
             return
           return
