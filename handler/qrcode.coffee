@@ -7,14 +7,14 @@ Configuration = require '../config/config'
 #Get config singleton instance
 configInstance = Configuration.getInstance()
 
-token="KRNWN3Kx80_mHDZwMc1WR3LXBiJvs6c2JQqTgia8q7-Izej1YaUwcy-mkyUELcwJ7CAgkqnminimgXpXtwJKKBZtrWa7rnhIFMQ5Gx4JByCUHMAnosQWUoEYzJW_vjgOdx7Q1M4BX96ty5081MnDLQ"
-exports.test = ()->
+# token="KRNWN3Kx80_mHDZwMc1WR3LXBiJvs6c2JQqTgia8q7-Izej1YaUwcy-mkyUELcwJ7CAgkqnminimgXpXtwJKKBZtrWa7rnhIFMQ5Gx4JByCUHMAnosQWUoEYzJW_vjgOdx7Q1M4BX96ty5081MnDLQ"
+# exports.test = ()->
 
- requestPermanetCode 123,token,(res)->
-   console.log res.ticket
-   savePic(res.ticket)
-   return
- return
+#  requestPermanetCode 123,token,(res)->
+#    console.log res.ticket
+#    savePic(res.ticket)
+#    return
+#  return
 
 exports.savePic = savePic= (ticket)->
  imgUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" +ticket
@@ -75,6 +75,7 @@ exports.requestQRCodeForUser  = (openid,token,callback)->
       return
     else
       requestTempCode scene_id,1800,token,(ticket)->
+        console.log "ticket:->" +ticket
         # save to redis
         if(ticket)
           picName = savePic(ticket.ticket)
