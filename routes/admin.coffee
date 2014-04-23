@@ -89,9 +89,10 @@ paging = (docs,page,countView,callback)->
 #get Followers list
 exports.follower_index = follower_index = (req, res) ->
     #console.log "Enter index"
+    console.log req.param("page")
     page = 1
-    if req.params.id
-        page = parseInt(req.params.id)
+    if req.param("page")
+        page = parseInt(req.param("page"))
     dbConnection = configInstance.getDBConnection()
     service = new FollowerService(dbConnection)
     param = {limit:AdminPageNum,skip:(page-1)*AdminPageNum} 
@@ -297,11 +298,12 @@ exports.config_save = (req,res)->
 exports.message_index = message_index = (req,res)->
     #console.log "Index page"
     # get type
+    console.log "params " + JSON.stringify( req.param("page"))
     type = req.params.type
     # #console.log type
     page = 1
-    if req.params.id
-        page = parseInt(req.params.id)
+    if req.param("page")
+        page = parseInt( req.param("page"))
     param = {
             limit:AdminPageNum,
             skip:(page-1)*AdminPageNum,
@@ -323,9 +325,8 @@ exports.message_type = message_type = (req,res)->
     else
         type = req.params.type
     page = 1
-    if req.params.id
-        page = parseInt(req.params.id)
-    # #console.log page    
+    if req.param("page")
+        page = parseInt(req.param("page"))
     param = {
             limit:AdminPageNum,
             skip:(page-1)*AdminPageNum,
