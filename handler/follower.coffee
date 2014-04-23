@@ -51,17 +51,20 @@ exports.countFollowers = (callback)->
       callback sum
 
 # If exists return else save id
-exports.saveFollowerIDWhenNotExistsInDB =isFollowerIDExistsInDB= (openid)->
+exports.saveFollowerIDWhenNotExistsInDB =isFollowerIDExistsInDB= (openid,callback)->
     db = configInstance.getDBConnection()
     service = new FollowerService(db)
     service.get  openid, (err,doc)->
       console.log "!@@@doc ->" + doc
       unless doc && doc.id == openid
-        saveOpenId(openid)
+        if (typeof callback)=="function"
+          saveOpenId(openid,callback)
+        else
+          saveOpenId(openid)      
       return
     return
 
-saveOpenId = (id)->
+exports.saveOpenId =saveOpenId= (id,callback)->
   follower = new FollowerModel(id,null,1,id)
   obj = follower.getObject()
   db = configInstance.getDBConnection()
@@ -70,6 +73,9 @@ saveOpenId = (id)->
   service.save obj,(err)->
     if(err)
       console.log err
+    console.log typeof(callback)
+    if (typeof callback)=="function"
+      callback()
   return
 
 exports.saveFollowersOpenId = (json)->
@@ -83,7 +89,7 @@ exports.saveFollowersOpenId = (json)->
     isFollowerIDExistsInDB id,(result)->
   return 
 
-exports.saveFollowerFullInfo = (json)->
+exports.saveFollowerFullInfo = (json,callback)->
     console.log "saveFollowerFullInfo" + JSON.stringify json
     db = configInstance.getDBConnection()
     service = new FollowerService(db)
@@ -104,6 +110,9 @@ exports.saveFollowerFullInfo = (json)->
         follower.rev = doc.rev
         obj = follower.getObject()
         service.save obj,(err)->
+          if (typeof callback)=="function"
+            callback()
+          return
       return
     return
 

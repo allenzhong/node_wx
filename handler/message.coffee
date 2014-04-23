@@ -8,6 +8,7 @@ ArticleService = require '../service/articleService'
 platformHandler = require './platform'
 followerHandler = require './follower'
 qrcodeHandler = require './qrcode'
+
 #for qrcode
 Canvas = require 'canvas'
 Image = Canvas.Image
@@ -58,7 +59,7 @@ saveMessage = (json)->
 readXml = (xml, callback) ->
   console.log "read xml->" + xml
   xmlreader.read xml, (err, res) ->
-    
+     
     #console.log("xmlreader.read");
     json =
       ToUserName: res.xml.ToUserName.text()
@@ -291,10 +292,10 @@ buildNewsForGetQR = (json,xml,callback)->
 # when subscribe, find whethe scene_id is exsits
 # If exists, build a news message,and send to user
 buildNewsForSubscribe = (json,xml,callback)->
-  console.log "buildNewsForSubscribe"
-  console.log json
+  # console.log "buildNewsForSubscribe"
+  # console.log json
   index = json.EventKey.indexOf("qrscene")
-  console.log "qrscene"
+  # console.log "qrscene"
   client = configInstance.getRedisClient()
   if(json.EventKey and index >-1) 
     scene_id = json.EventKey.substring(8)
@@ -303,11 +304,22 @@ buildNewsForSubscribe = (json,xml,callback)->
     client.get key,(err,reply)->
       console.log reply
       if(reply)
-        result = "扫描推荐人二维码成功，获得积分50分"
-        followerHandler.updateSuperior(json.FromUserName,reply)
-        xml.ele("MsgType").dat "text"
-        xml.ele("Content").dat result
-        callback xml
+        open_id = json.FromUserName
+        followerHandler.saveOpenId open_id,()->
+          console.log "callback save open id"
+          platformHandler.getAccessToken (access_token) ->
+            followerHandler.getFollower access_token, open_id, (result_json)->
+              console.log result_json
+              followerHandler.saveFollowerFullInfo result_json,()->
+                  followerHandler.updateSuperior(json.FromUserName,reply)
+              result = "扫描推荐人二维码成功，获得积分50分"
+              xml.ele("MsgType").dat "text"
+              xml.ele("Content").dat result
+              callback xml
+              return
+            return
+          return
+        return
       else
         xml.ele("MsgType").dat "text"
         xml.ele("Content").dat "二维码已经失效，请推荐人再次生成二维码，谢谢"
