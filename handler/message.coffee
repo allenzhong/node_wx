@@ -313,11 +313,12 @@ buildNewsForSubscribe = (json,xml,callback)->
               followerHandler.saveFollowerFullInfo result_json,(person)->
                   nickname = person.nickname
                   msg = "用户 "+nickname+" 使用你的推荐码成功关注本订阅号，你获得20积分"
-                  console.log msg
+                  
                   followerHandler.sendmsg access_token, reply, "text", msg, (response) ->
-                  followerHandler.updateSuperior(json.FromUserName,reply)
+
                   followerHandler.getAFollowerFromDB reply,(follower)->
                     console.log "reply ->"+reply
+                    followerHandler.updateSuperior(json.FromUserName,reply)
                     result = "扫描推荐人 " + follower.nickname + " 的二维码成功，获得积分50分"
                     xml.ele("MsgType").dat "text"
                     xml.ele("Content").dat result
