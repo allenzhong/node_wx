@@ -198,8 +198,25 @@ exports.updateSuperior= (follower_id,superior_id)->
     if doc
       follower = new FollowerModel()
       follower.parseDoc(doc)
+      if follower.bonus
+        follower.bonus = configInstance.Bonus + Number(follower.bonus)
+      else
+        follower.bonus = configInstance.Bonus
       follower.superior = superior_id
       obj = follower.getObject()
       service.save obj,(err)->
 
+exports.updateBonus = (follower_id)->
+  db = configInstance.getDBConnection()
+  service = new FollowerService(db)
+  service.get follower_id,(err,doc)->
+    if doc
+      follower = new FollowerModel()
+      follower.parseDoc(doc)
+      if follower.bonus
+        follower.bonus = configInstance.Bonus + Number(follower.bonus)
+      else
+        follower.bonus = configInstance.Bonus
+      obj = follower.getObject()
+      service.save obj,(err)->
 

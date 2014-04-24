@@ -89,7 +89,7 @@ readXml = (xml, callback) ->
       json.Location_X = res.xml.Location_X.text()
       json.Location_Y = res.xml.Location_Y.text()
       json.Scale = res.xml.Scale.text()
-      json.Label = res.xml.Label.text()
+      json.Label = res.xml.Label.text() if (typeof res.xml.Label.text)=='function'
       jsonMsgId = res.xml.MsgId.text()
     else if json.MsgType is "link"
       json.Title = res.xml.Title.text()
@@ -127,6 +127,7 @@ buildXml = (json, callback) ->
             if _id!=json.FromUserName
                 result = "暗号输入成功，获得积分50分"
                 followerHandler.updateSuperior(json.FromUserName,_id)
+                followerHandler.updateBonus(json.FromUserName)
             else
                 result = "对不起，不能输入自己的暗号哦～"   
             xml.ele("Content").dat result
@@ -216,8 +217,7 @@ buildEvent = (json, callback) ->
   xml.ele("FromUserName").dat json.ToUserName
   xml.ele("CreateTime").dat json.CreateTime
 
-  if json.Event is "subscribe" and json.EventKey
-    console.log "sub"
+  if json.Event is "subscribe"
     buildNewsForSubscribe json,xml,callback
   else if json.Event is "unsubscribe"
     xml.ele("MsgType").dat "text"
@@ -292,7 +292,7 @@ buildNewsForGetQR = (json,xml,callback)->
 # when subscribe, find whethe scene_id is exsits
 # If exists, build a news message,and send to user
 buildNewsForSubscribe = (json,xml,callback)->
-  # console.log "buildNewsForSubscribe"
+  console.log "buildNewsForSubscribe"
   # console.log json
   index = json.EventKey.indexOf("qrscene")
   # console.log "qrscene"
@@ -319,6 +319,7 @@ buildNewsForSubscribe = (json,xml,callback)->
                   followerHandler.getAFollowerFromDB reply,(follower)->
                     console.log "reply ->"+reply
                     followerHandler.updateSuperior(json.FromUserName,reply)
+                    followerHandler.updateBonus(reply)
                     result = "扫描推荐人 " + follower.nickname + " 的二维码成功，获得积分50分"
                     xml.ele("MsgType").dat "text"
                     xml.ele("Content").dat result
@@ -332,6 +333,13 @@ buildNewsForSubscribe = (json,xml,callback)->
         xml.ele("MsgType").dat "text"
         xml.ele("Content").dat "二维码已经失效，请推荐人再次生成二维码，谢谢"
         callback xml
+  else
+    console.log "else"
+    followerHandler.updateBonus(json.FromUserName)
+    xml.ele("MsgType").dat "text"
+    xml.ele("Content").dat "谢谢关注本订阅号，您已获得50积分"
+    callback xml
+    return
 
 # when already subscribed
 buildNewsForScanQR = (json,xml,callback)->

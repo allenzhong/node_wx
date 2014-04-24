@@ -92,20 +92,20 @@ block content
             | Followers
     table.table.table-striped
         tr
-            th Open ID
+            //- th Open ID
             th Name
             th Sex
             th Address
             th Code
-            th
+            th Bonus
             th
             th
         - each item in docs
             tr
-                td 
-                    a( href="#" + item.id,rel="openid",rel1="#{item.openid}")
-                        i.glyphicon.glyphicon-eye-open
-                        |  #{item.id}
+                //- td 
+                //-     a( href="#" + item.id,rel="openid",rel1="#{item.openid}")
+                //-         i.glyphicon.glyphicon-eye-open
+                //-         |  #{item.id}
                 td(id="name-#{item.openid}")!= item.nickname
                 td
                     if item.sex && item.sex == 1
@@ -118,6 +118,11 @@ block content
                     !=item.city
                 td
                     !=item.code
+                td
+                    if item.bonus
+                      =item.bonus
+                    else
+                      | 0
                 td 
                     a(href="#" + item.id,rel="#{item.id}",rel1="update-follower")
                         i.glyphicon.glyphicon-search                   

@@ -16,6 +16,10 @@ class Configuration
 
             #PageNum
             @AdminPageNum = 20
+
+            #Bonus
+            @Bonus = 50
+            
             @redisClient = redis.createClient()
         getDBConnection:()->
             host = @CouchDB_URL

@@ -46,6 +46,7 @@ function init() {
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         levelDistance: 50,
+        orientation: "top",
         Navigation: {
             enable: true,
             panning: true
@@ -180,11 +181,11 @@ function init() {
             });
             html += "</ul > ";
             $jit.id('inner-details').innerHTML = html;
-            st.switchPosition("top", "animate", {
-                onComplete: function() {
-                    //alert('completed!');
-                }
-            });
+            // st.switchPosition("top", "animate", {
+            //     onComplete: function() {
+            //         //alert('completed!');
+            //     }
+            // });
         }
     });
 
