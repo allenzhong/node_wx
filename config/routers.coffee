@@ -85,6 +85,9 @@ exports.routerSettings = (app)->
         req.rawBody = data
         routes.doMessage req, res
         return
+        
+    #do check signature
+    app.get "/",routes.index
 
     #deprecated routes
     app.get "/follower/:id", routes.follower
